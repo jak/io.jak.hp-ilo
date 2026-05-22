@@ -254,4 +254,13 @@ export class IloClient {
       maxFanPercent: fanReadings.length ? Math.max(...fanReadings) : undefined,
     };
   }
+
+  async probe(): Promise<{ name: string; serialNumber: string; model: string }> {
+    try {
+      await this.login();
+      return await this.getServerInfo();
+    } finally {
+      await this.logout().catch(() => undefined);
+    }
+  }
 }
