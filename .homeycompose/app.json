@@ -8,6 +8,7 @@
   "name": { "en": "HP iLO" },
   "description": { "en": "Manage and monitor HPE servers via the iLO Redfish API" },
   "category": ["tools"],
+  "brandColor": "#01A982",
   "permissions": [],
   "images": {
     "small": "/assets/images/small.png",
