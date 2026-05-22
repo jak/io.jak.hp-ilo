@@ -1,1 +1,7 @@
-{ "extends": "athom/homey-app" }
+{
+  "extends": "athom/homey-app",
+  "ignorePatterns": ["test/", ".homeybuild/", "node_modules/"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  }
+}

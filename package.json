@@ -1,10 +1,16 @@
 {
   "name": "io.jak.hp-ilo",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "build": "tsc",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
     "test": "mocha"
+  },
+  "dependencies": {
+    "undici": "^6.21.0"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.8",
