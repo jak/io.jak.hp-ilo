@@ -1,5 +1,7 @@
 import { Agent } from 'undici';
-import type { HealthState, PowerState, ResetType } from './redfish-types';
+import type {
+  HealthState, PowerState, ResetType, ThermalReading,
+} from './redfish-types';
 
 export interface HttpResponse {
   status: number;
@@ -230,5 +232,26 @@ export class IloClient {
     const env = await this.getJsonOrNull(this.join(chassis, 'EnvironmentMetrics'));
     const reading = env?.PowerWatts?.Reading;
     return typeof reading === 'number' ? reading : null;
+  }
+
+  async getThermal(): Promise<ThermalReading> {
+    const chassis = await this.chassisUri();
+    const thermal = await this.getJsonOrNull(this.join(chassis, 'Thermal'));
+    const temps: any[] = thermal?.Temperatures ?? [];
+    const fans: any[] = thermal?.Fans ?? [];
+
+    const isReading = (v: any) => typeof v?.ReadingCelsius === 'number';
+    const inlet = temps.find((x) => x.PhysicalContext === 'Intake' || /inlet ambient/i.test(x.Name ?? ''));
+    const cpus = temps.filter((x) => x.PhysicalContext === 'CPU' && isReading(x));
+
+    const fanReadings = fans
+      .filter((f) => f.ReadingUnits === 'Percent' && typeof f.Reading === 'number')
+      .map((f) => f.Reading as number);
+
+    return {
+      inletTemp: isReading(inlet) ? inlet.ReadingCelsius : undefined,
+      cpuTemp: cpus.length ? Math.max(...cpus.map((x) => x.ReadingCelsius)) : undefined,
+      maxFanPercent: fanReadings.length ? Math.max(...fanReadings) : undefined,
+    };
   }
 }

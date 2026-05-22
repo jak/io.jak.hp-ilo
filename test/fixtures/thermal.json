@@ -1,0 +1,49 @@
+{
+  "@odata.id": "/redfish/v1/Chassis/1/Thermal",
+  "Id": "Thermal",
+  "Name": "Thermal",
+  "Temperatures": [
+    {
+      "@odata.id": "/redfish/v1/Chassis/1/Thermal#/Temperatures/0",
+      "MemberId": "0",
+      "Name": "01-Inlet Ambient",
+      "PhysicalContext": "Intake",
+      "ReadingCelsius": 22,
+      "Status": { "Health": "OK", "State": "Enabled" }
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/1/Thermal#/Temperatures/1",
+      "MemberId": "1",
+      "Name": "04-P1 DIMM 1-6",
+      "PhysicalContext": "Memory",
+      "ReadingCelsius": 30,
+      "Status": { "Health": "OK", "State": "Enabled" }
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/1/Thermal#/Temperatures/2",
+      "MemberId": "2",
+      "Name": "10-P1 CPU 1",
+      "PhysicalContext": "CPU",
+      "ReadingCelsius": 40,
+      "Status": { "Health": "OK", "State": "Enabled" }
+    }
+  ],
+  "Fans": [
+    {
+      "@odata.id": "/redfish/v1/Chassis/1/Thermal#/Fans/0",
+      "MemberId": "0",
+      "Name": "Fan 1",
+      "Reading": 11,
+      "ReadingUnits": "Percent",
+      "Status": { "Health": "OK", "State": "Enabled" }
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/1/Thermal#/Fans/1",
+      "MemberId": "1",
+      "Name": "Fan 2",
+      "Reading": 10,
+      "ReadingUnits": "Percent",
+      "Status": { "Health": "OK", "State": "Enabled" }
+    }
+  ]
+}
