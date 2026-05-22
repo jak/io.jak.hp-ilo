@@ -85,4 +85,48 @@ export class IloClient {
     this.sessionUri = res.headers['location'];
     if (!this.authToken) throw new Error('Login succeeded but no X-Auth-Token was returned');
   }
+
+  private authHeaders(): Record<string, string> {
+    const h: Record<string, string> = { 'Content-Type': 'application/json', 'OData-Version': '4.0' };
+    if (this.authToken) h['X-Auth-Token'] = this.authToken;
+    return h;
+  }
+
+  private async request(method: string, path: string, body?: unknown, _retry = true): Promise<HttpResponse> {
+    if (!this.authToken) await this.login();
+    const res = await this.transport(this.url(path), {
+      method,
+      headers: this.authHeaders(),
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    if (res.status === 401 && _retry) {
+      this.authToken = undefined;
+      await this.login();
+      return this.request(method, path, body, false);
+    }
+    return res;
+  }
+
+  async getJson(path: string): Promise<any> {
+    const res = await this.request('GET', path);
+    if (res.status === 404) {
+      const e: any = new Error(`Not found: ${path}`);
+      e.status = 404;
+      throw e;
+    }
+    if (res.status >= 400) {
+      const b = await res.json().catch(() => ({}));
+      throw new Error(redfishErrorMessage(b, `GET ${path} failed (HTTP ${res.status})`));
+    }
+    return res.json();
+  }
+
+  async logout(): Promise<void> {
+    if (this.authToken && this.sessionUri) {
+      await this.transport(this.url(this.sessionUri), { method: 'DELETE', headers: this.authHeaders() })
+        .catch(() => undefined);
+    }
+    this.authToken = undefined;
+    this.sessionUri = undefined;
+  }
 }
