@@ -1,4 +1,5 @@
 import { Agent } from 'undici';
+import type { HealthState, PowerState } from './redfish-types';
 
 export interface HttpResponse {
   status: number;
@@ -148,5 +149,43 @@ export class IloClient {
   async chassisUri(): Promise<string> {
     if (!this._chassisUri) this._chassisUri = await this.firstMember('/redfish/v1/Chassis/');
     return this._chassisUri;
+  }
+
+  private mapHealth(raw?: string): HealthState {
+    switch ((raw ?? '').toLowerCase()) {
+      case 'ok': return 'ok';
+      case 'warning': return 'warning';
+      case 'critical': return 'critical';
+      default: return 'unknown';
+    }
+  }
+
+  async getSystem(): Promise<any> {
+    return this.getJson(await this.systemUri());
+  }
+
+  async getPowerState(): Promise<PowerState> {
+    const sys = await this.getSystem();
+    switch (sys.PowerState) {
+      case 'On': return 'on';
+      case 'Off': return 'off';
+      case 'PoweringOn':
+      case 'PoweringOff': return 'transitioning';
+      default: return 'unknown';
+    }
+  }
+
+  async getHealth(): Promise<HealthState> {
+    const sys = await this.getSystem();
+    return this.mapHealth(sys?.Status?.HealthRollup ?? sys?.Status?.Health);
+  }
+
+  async getServerInfo(): Promise<{ name: string; serialNumber: string; model: string }> {
+    const sys = await this.getSystem();
+    return {
+      name: sys.Model || sys.Name || 'HPE Server',
+      serialNumber: String(sys.SerialNumber || sys.Name || 'unknown'),
+      model: sys.Model || 'HPE Server',
+    };
   }
 }

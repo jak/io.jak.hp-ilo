@@ -2,6 +2,7 @@
   "extends": "athom/homey-app",
   "ignorePatterns": ["test/", ".homeybuild/", "node_modules/"],
   "rules": {
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "node/no-missing-import": ["error", { "allowModules": ["homey"], "tryExtensions": [".js", ".ts", ".json", ".node"] }]
   }
 }

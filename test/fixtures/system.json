@@ -1,0 +1,28 @@
+{
+  "@odata.id": "/redfish/v1/Systems/1/",
+  "Id": "1",
+  "Name": "Computer System",
+  "Manufacturer": "HPE",
+  "Model": "ProLiant DL380 Gen10",
+  "SerialNumber": "CZ1234ABCD",
+  "PowerState": "On",
+  "Status": {
+    "Health": "OK",
+    "HealthRollup": "OK",
+    "State": "Enabled"
+  },
+  "Actions": {
+    "#ComputerSystem.Reset": {
+      "ResetType@Redfish.AllowableValues": [
+        "On",
+        "ForceOff",
+        "GracefulShutdown",
+        "ForceRestart",
+        "GracefulRestart",
+        "Nmi",
+        "PushPowerButton"
+      ],
+      "target": "/redfish/v1/Systems/1/Actions/ComputerSystem.Reset/"
+    }
+  }
+}
