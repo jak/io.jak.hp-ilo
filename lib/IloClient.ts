@@ -207,4 +207,28 @@ export class IloClient {
       throw new Error(redfishErrorMessage(b, `Reset ${resetType} failed (HTTP ${res.status})`));
     }
   }
+
+  private join(base: string, sub: string): string {
+    return base.endsWith('/') ? base + sub : `${base}/${sub}`;
+  }
+
+  /** GET that returns null on 404 instead of throwing. */
+  private async getJsonOrNull(path: string): Promise<any | null> {
+    try {
+      return await this.getJson(path);
+    } catch (e: any) {
+      if (e?.status === 404) return null;
+      throw e;
+    }
+  }
+
+  async getPowerWatts(): Promise<number | null> {
+    const chassis = await this.chassisUri();
+    const power = await this.getJsonOrNull(this.join(chassis, 'Power'));
+    const watts = power?.PowerControl?.[0]?.PowerConsumedWatts;
+    if (typeof watts === 'number') return watts;
+    const env = await this.getJsonOrNull(this.join(chassis, 'EnvironmentMetrics'));
+    const reading = env?.PowerWatts?.Reading;
+    return typeof reading === 'number' ? reading : null;
+  }
 }
