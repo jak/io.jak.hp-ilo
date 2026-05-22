@@ -27,6 +27,156 @@
     "name": "jak",
     "email": "191585+jak@users.noreply.github.com"
   },
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Health status changed"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "health",
+            "type": "string",
+            "title": {
+              "en": "Health"
+            },
+            "example": "warning"
+          }
+        ],
+        "id": "health_changed"
+      },
+      {
+        "title": {
+          "en": "Health became critical"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "health_critical"
+      }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "Health !{{is|isn't}} OK"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "health_is_ok"
+      },
+      {
+        "title": {
+          "en": "Server !{{is|isn't}} powered on"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "is_on"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Cold boot (force restart)"
+        },
+        "titleFormatted": {
+          "en": "Cold boot (force restart) [[device]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "cold_boot"
+      },
+      {
+        "title": {
+          "en": "Force power off"
+        },
+        "titleFormatted": {
+          "en": "Force power off [[device]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "force_off"
+      },
+      {
+        "title": {
+          "en": "Graceful shutdown"
+        },
+        "titleFormatted": {
+          "en": "Graceful shutdown [[device]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "graceful_shutdown"
+      },
+      {
+        "title": {
+          "en": "Turn on"
+        },
+        "titleFormatted": {
+          "en": "Turn on [[device]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "turn_on"
+      },
+      {
+        "title": {
+          "en": "Restart (warm)"
+        },
+        "titleFormatted": {
+          "en": "Restart (warm) [[device]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "warm_reset"
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {

@@ -12,7 +12,23 @@ interface PairCreds {
   allowSelfSigned: boolean;
 }
 
+/** Reset types accepted by the device's actionPower helper / flow actions. */
+type DeviceResetType = 'On' | 'ForceOff' | 'GracefulShutdown' | 'GracefulRestart' | 'ForceRestart';
+
+/** The public surface of the server device that the flow cards rely on.
+ * Homey types `args.device` loosely, so we narrow it to this interface
+ * instead of casting through `any`. */
+interface IloServerDevice extends Homey.Device {
+  actionPower(reset: DeviceResetType): Promise<void>;
+  getHealthValue(): string;
+  isPoweredOn(): boolean;
+}
+
 module.exports = class ServerDriver extends Homey.Driver {
+
+  private healthChanged?: Homey.FlowCardTriggerDevice;
+
+  private healthCritical?: Homey.FlowCardTriggerDevice;
 
   async onInit() {
     this.log('Server driver initialized');
@@ -67,7 +83,38 @@ module.exports = class ServerDriver extends Homey.Driver {
   }
 
   registerFlowCards() {
-    // flow cards registered in a later task
+    // Conditions
+    this.homey.flow.getConditionCard('is_on')
+      .registerRunListener(async (args: { device: IloServerDevice }) => args.device.isPoweredOn());
+    this.homey.flow.getConditionCard('health_is_ok')
+      .registerRunListener(async (args: { device: IloServerDevice }) => args.device.getHealthValue() === 'ok');
+
+    // Actions: card id -> Redfish reset type
+    const resetByCard: Record<string, DeviceResetType> = {
+      turn_on: 'On',
+      graceful_shutdown: 'GracefulShutdown',
+      force_off: 'ForceOff',
+      warm_reset: 'GracefulRestart',
+      cold_boot: 'ForceRestart',
+    };
+    for (const [cardId, reset] of Object.entries(resetByCard)) {
+      this.homey.flow.getActionCard(cardId)
+        .registerRunListener(async (args: { device: IloServerDevice }) => {
+          await args.device.actionPower(reset);
+        });
+    }
+
+    // Device triggers (fired from device.ts via the methods below)
+    this.healthChanged = this.homey.flow.getDeviceTriggerCard('health_changed');
+    this.healthCritical = this.homey.flow.getDeviceTriggerCard('health_critical');
+  }
+
+  triggerHealthChanged(device: Homey.Device, health: string): void {
+    this.healthChanged?.trigger(device, { health }, {}).catch((err) => this.error(err));
+  }
+
+  triggerHealthCritical(device: Homey.Device): void {
+    this.healthCritical?.trigger(device, {}, {}).catch((err) => this.error(err));
   }
 
 };

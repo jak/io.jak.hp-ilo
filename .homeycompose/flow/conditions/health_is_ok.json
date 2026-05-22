@@ -1,0 +1,4 @@
+{
+  "title": { "en": "Health !{{is|isn't}} OK" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}

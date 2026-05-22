@@ -1,0 +1,4 @@
+{
+  "title": { "en": "Server !{{is|isn't}} powered on" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}

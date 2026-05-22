@@ -11,6 +11,14 @@ interface ServerStore {
 /** Reset types exposed to flow actions / the on-off listener. */
 type DeviceResetType = 'On' | 'ForceOff' | 'GracefulShutdown' | 'GracefulRestart' | 'ForceRestart';
 
+/** The driver's flow-trigger surface. The driver uses `export =` (module.exports),
+ * which is awkward to import as a type, so we narrow `this.driver` to this
+ * local interface instead of casting through `any`. */
+interface IloServerDriver extends Homey.Driver {
+  triggerHealthChanged(device: Homey.Device, health: string): void;
+  triggerHealthCritical(device: Homey.Device): void;
+}
+
 module.exports = class ServerDevice extends Homey.Device {
 
   private client?: IloClient;
@@ -79,7 +87,12 @@ module.exports = class ServerDevice extends Homey.Device {
       if (t.maxFanPercent !== undefined) await this.setCapabilityValue('measure_fan_speed', t.maxFanPercent);
     }
     if (health.status === 'fulfilled' && health.value !== 'unknown') {
-      // Health-change triggers are wired up in a later task; for now just reflect the value.
+      const previous = this.getCapabilityValue('ilo_health');
+      if (previous !== health.value) {
+        const driver = this.driver as IloServerDriver;
+        driver.triggerHealthChanged(this, health.value);
+        if (health.value === 'critical') driver.triggerHealthCritical(this);
+      }
       await this.setCapabilityValue('ilo_health', health.value);
     }
 

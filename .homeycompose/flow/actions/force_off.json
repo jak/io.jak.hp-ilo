@@ -1,0 +1,5 @@
+{
+  "title": { "en": "Force power off" },
+  "titleFormatted": { "en": "Force power off [[device]]" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}
