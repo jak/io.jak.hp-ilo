@@ -13,13 +13,14 @@ type DeviceResetType = 'On' | 'ForceOff' | 'GracefulShutdown' | 'GracefulRestart
 
 module.exports = class ServerDevice extends Homey.Device {
 
-  private client!: IloClient;
+  private client?: IloClient;
   private pollTimer?: NodeJS.Timeout;
 
   async onInit() {
     this.buildClient();
 
     this.registerCapabilityListener('onoff', async (value: boolean) => {
+      if (!this.client) throw new Error('Device is not connected');
       await this.client.setPower(value ? 'On' : 'GracefulShutdown');
     });
 
@@ -29,9 +30,14 @@ module.exports = class ServerDevice extends Homey.Device {
   }
 
   private buildClient() {
+    // Log out any previous session (onSettings rebuild path) so we don't
+    // orphan an iLO session. Fire-and-forget: logout() is idempotent and
+    // swallows its own errors. buildClient stays synchronous.
+    this.client?.logout().catch(() => undefined);
+
     const store = this.getStore() as ServerStore;
     const allowSelfSigned = this.getSetting('allow_self_signed') as boolean;
-    const host = (this.getSetting('host') as string) || store.host;
+    const host = ((this.getSetting('host') as string) || '').trim() || store.host;
     this.client = new IloClient({
       host,
       username: store.username,
@@ -49,28 +55,43 @@ module.exports = class ServerDevice extends Homey.Device {
   }
 
   private async poll() {
-    try {
-      const [power, watts, thermal, health] = await Promise.all([
-        this.client.getPowerState(),
-        this.client.getPowerWatts(),
-        this.client.getThermal(),
-        this.client.getHealth(),
-      ]);
+    if (!this.client) return;
 
-      if (power === 'on' || power === 'off') {
-        await this.setCapabilityValue('onoff', power === 'on');
-      }
-      if (watts !== null) await this.setCapabilityValue('measure_power', watts);
-      if (thermal.inletTemp !== undefined) await this.setCapabilityValue('measure_temperature', thermal.inletTemp);
-      if (thermal.cpuTemp !== undefined) await this.setCapabilityValue('measure_temperature.cpu', thermal.cpuTemp);
-      if (thermal.maxFanPercent !== undefined) await this.setCapabilityValue('measure_fan_speed', thermal.maxFanPercent);
+    // allSettled so one failing subresource (e.g. a chassis with no /Thermal)
+    // doesn't blank the whole device — fulfilled readings still update.
+    const [power, watts, thermal, health] = await Promise.allSettled([
+      this.client.getPowerState(),
+      this.client.getPowerWatts(),
+      this.client.getThermal(),
+      this.client.getHealth(),
+    ]);
+
+    if (power.status === 'fulfilled' && (power.value === 'on' || power.value === 'off')) {
+      await this.setCapabilityValue('onoff', power.value === 'on');
+    }
+    if (watts.status === 'fulfilled' && watts.value !== null) {
+      await this.setCapabilityValue('measure_power', watts.value);
+    }
+    if (thermal.status === 'fulfilled') {
+      const t = thermal.value;
+      if (t.inletTemp !== undefined) await this.setCapabilityValue('measure_temperature', t.inletTemp);
+      if (t.cpuTemp !== undefined) await this.setCapabilityValue('measure_temperature.cpu', t.cpuTemp);
+      if (t.maxFanPercent !== undefined) await this.setCapabilityValue('measure_fan_speed', t.maxFanPercent);
+    }
+    if (health.status === 'fulfilled' && health.value !== 'unknown') {
       // Health-change triggers are wired up in a later task; for now just reflect the value.
-      if (health !== 'unknown') await this.setCapabilityValue('ilo_health', health);
+      await this.setCapabilityValue('ilo_health', health.value);
+    }
 
-      await this.setAvailable();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+    // Availability keys on getPowerState: power state + health both come from
+    // getSystem(), so it's the core "is the iLO reachable/authorized" signal.
+    // Thermal/watts failures are soft (device stays available).
+    if (power.status === 'rejected') {
+      const { reason }: PromiseRejectedResult = power;
+      const message = reason instanceof Error ? reason.message : String(reason);
       await this.setUnavailable(`iLO unreachable: ${message}`).catch(() => undefined);
+    } else {
+      await this.setAvailable();
     }
   }
 
@@ -94,14 +115,17 @@ module.exports = class ServerDevice extends Homey.Device {
 
   async onDeleted() {
     if (this.pollTimer) this.homey.clearInterval(this.pollTimer);
+    await this.client?.logout().catch(() => undefined);
   }
 
   async onUninit() {
     if (this.pollTimer) this.homey.clearInterval(this.pollTimer);
+    await this.client?.logout().catch(() => undefined);
   }
 
   // Public helpers for flow cards (registered in a later task).
   async actionPower(reset: DeviceResetType) {
+    if (!this.client) throw new Error('Device is not connected');
     await this.client.setPower(reset);
   }
 
