@@ -1,0 +1,43 @@
+<script type="application/javascript">
+  function onHomeyReady(Homey) {
+    Homey.setTitle('Connect to iLO');
+
+    const btn = document.getElementById('connect');
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      try {
+        await Homey.emit('manual_login', {
+          host: document.getElementById('host').value.trim(),
+          username: document.getElementById('username').value.trim(),
+          password: document.getElementById('password').value,
+          allowSelfSigned: document.getElementById('selfsigned').checked,
+        });
+        Homey.showView('list_devices');
+      } catch (err) {
+        Homey.alert(err && err.message ? err.message : String(err));
+        btn.disabled = false;
+      }
+    });
+
+    Homey.ready();
+  }
+</script>
+
+<div class="homey-form-group">
+  <label class="homey-form-label" for="host">Host / IP</label>
+  <input id="host" class="homey-form-input" type="text" placeholder="192.168.1.50" />
+</div>
+<div class="homey-form-group">
+  <label class="homey-form-label" for="username">Username</label>
+  <input id="username" class="homey-form-input" type="text" placeholder="Administrator" />
+</div>
+<div class="homey-form-group">
+  <label class="homey-form-label" for="password">Password</label>
+  <input id="password" class="homey-form-input" type="password" />
+</div>
+<label class="homey-form-checkbox">
+  <input id="selfsigned" type="checkbox" checked />
+  <span class="homey-form-checkbox-checkmark"></span>
+  <span class="homey-form-checkbox-text">Allow self-signed certificate</span>
+</label>
+<button id="connect" class="homey-button-primary-full">Connect</button>

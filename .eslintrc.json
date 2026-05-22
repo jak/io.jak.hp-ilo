@@ -2,7 +2,11 @@
   "extends": "athom/homey-app",
   "ignorePatterns": ["test/", ".homeybuild/", "node_modules/"],
   "rules": {
-    "node/no-missing-import": ["error", { "allowModules": ["homey"], "tryExtensions": [".js", ".ts", ".json", ".node"] }]
+    "node/no-missing-import": ["error", { "allowModules": ["homey"], "tryExtensions": [".js", ".ts", ".json", ".node"] }],
+    "import/extensions": ["error", "ignorePackages", { "js": "never", "ts": "never" }]
+  },
+  "settings": {
+    "import/resolver": { "node": { "extensions": [".js", ".ts", ".json", ".node"] } }
   },
   "overrides": [
     {
