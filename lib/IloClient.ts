@@ -1,5 +1,5 @@
 import { Agent } from 'undici';
-import type { HealthState, PowerState } from './redfish-types';
+import type { HealthState, PowerState, ResetType } from './redfish-types';
 
 export interface HttpResponse {
   status: number;
@@ -187,5 +187,24 @@ export class IloClient {
       serialNumber: String(sys.SerialNumber || sys.Name || 'unknown'),
       model: sys.Model || 'HPE Server',
     };
+  }
+
+  private async resetAction(): Promise<{ target: string; allowable: string[] }> {
+    const sys = await this.getSystem();
+    const action = sys?.Actions?.['#ComputerSystem.Reset'];
+    if (!action?.target) throw new Error('Server does not expose a reset action');
+    return { target: action.target, allowable: action['ResetType@Redfish.AllowableValues'] ?? [] };
+  }
+
+  async setPower(resetType: ResetType): Promise<void> {
+    const { target, allowable } = await this.resetAction();
+    if (allowable.length && !allowable.includes(resetType)) {
+      throw new Error(`Reset type "${resetType}" is not supported by this server (supports: ${allowable.join(', ')})`);
+    }
+    const res = await this.request('POST', target, { ResetType: resetType });
+    if (res.status >= 400) {
+      const b = await res.json().catch(() => ({}));
+      throw new Error(redfishErrorMessage(b, `Reset ${resetType} failed (HTTP ${res.status})`));
+    }
   }
 }
