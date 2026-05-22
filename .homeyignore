@@ -1,0 +1,4 @@
+# Exclude development-only files from the published Homey app bundle.
+# (Homey already ignores *.ts, tsconfig.json, dotfiles and node_modules by default.)
+test/
+docs/
