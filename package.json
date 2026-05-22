@@ -1,0 +1,22 @@
+{
+  "name": "io.jak.hp-ilo",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^16.1.8",
+    "@types/chai": "^4.3.20",
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^16.18.126",
+    "chai": "^4.5.0",
+    "eslint": "^7.32.0",
+    "eslint-config-athom": "^3.1.5",
+    "mocha": "^11.7.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

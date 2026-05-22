@@ -1,0 +1,18 @@
+{
+  "id": "io.jak.hp-ilo",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "platforms": ["local"],
+  "name": { "en": "HP iLO" },
+  "description": { "en": "Manage and monitor HPE servers via the iLO Redfish API" },
+  "category": ["tools"],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": { "name": "jak", "email": "191585+jak@users.noreply.github.com" }
+}
