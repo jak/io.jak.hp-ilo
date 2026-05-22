@@ -1,0 +1,13 @@
+{
+  "type": "number",
+  "title": { "en": "Fan speed" },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "units": { "en": "%" },
+  "min": 0,
+  "max": 100,
+  "decimals": 0,
+  "insights": true,
+  "icon": "/assets/fan.svg"
+}

@@ -26,5 +26,168 @@
   "author": {
     "name": "jak",
     "email": "191585+jak@users.noreply.github.com"
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "HPE Server (iLO)"
+      },
+      "class": "other",
+      "capabilities": [
+        "onoff",
+        "measure_power",
+        "measure_temperature",
+        "measure_temperature.cpu",
+        "measure_fan_speed",
+        "ilo_health"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Power"
+          }
+        },
+        "measure_temperature": {
+          "title": {
+            "en": "Inlet temperature"
+          }
+        },
+        "measure_temperature.cpu": {
+          "title": {
+            "en": "CPU temperature"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/server/assets/images/small.png",
+        "large": "/drivers/server/assets/images/large.png",
+        "xlarge": "/drivers/server/assets/images/xlarge.png"
+      },
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Connection"
+          },
+          "children": [
+            {
+              "id": "host",
+              "type": "text",
+              "label": {
+                "en": "Host / IP"
+              },
+              "value": ""
+            },
+            {
+              "id": "allow_self_signed",
+              "type": "checkbox",
+              "label": {
+                "en": "Allow self-signed certificate"
+              },
+              "value": true,
+              "hint": {
+                "en": "iLO ships with a self-signed certificate. Disable only if you installed a trusted certificate."
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Polling"
+          },
+          "children": [
+            {
+              "id": "poll_interval",
+              "type": "number",
+              "label": {
+                "en": "Poll interval (seconds)"
+              },
+              "value": 30,
+              "min": 10,
+              "max": 3600,
+              "step": 5,
+              "units": {
+                "en": "s"
+              }
+            }
+          ]
+        }
+      ],
+      "pair": [
+        {
+          "id": "login",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "server"
+    }
+  ],
+  "capabilities": {
+    "ilo_health": {
+      "type": "enum",
+      "title": {
+        "en": "Health"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "values": [
+        {
+          "id": "ok",
+          "title": {
+            "en": "OK"
+          }
+        },
+        {
+          "id": "warning",
+          "title": {
+            "en": "Warning"
+          }
+        },
+        {
+          "id": "critical",
+          "title": {
+            "en": "Critical"
+          }
+        }
+      ]
+    },
+    "measure_fan_speed": {
+      "type": "number",
+      "title": {
+        "en": "Fan speed"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "%"
+      },
+      "min": 0,
+      "max": 100,
+      "decimals": 0,
+      "insights": true,
+      "icon": "/assets/fan.svg"
+    }
   }
 }

@@ -1,0 +1,12 @@
+{
+  "type": "enum",
+  "title": { "en": "Health" },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "values": [
+    { "id": "ok", "title": { "en": "OK" } },
+    { "id": "warning", "title": { "en": "Warning" } },
+    { "id": "critical", "title": { "en": "Critical" } }
+  ]
+}
