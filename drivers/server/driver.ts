@@ -1,5 +1,6 @@
 import Homey from 'homey';
 import { IloClient } from '../../lib/IloClient';
+import type { HealthState, DeviceResetType } from '../../lib/redfish-types';
 
 /** The PairSession type is not exported at the top level of the Homey types,
  * so derive it from the onPair signature instead of casting to `any`. */
@@ -12,15 +13,13 @@ interface PairCreds {
   allowSelfSigned: boolean;
 }
 
-/** Reset types accepted by the device's actionPower helper / flow actions. */
-type DeviceResetType = 'On' | 'ForceOff' | 'GracefulShutdown' | 'GracefulRestart' | 'ForceRestart';
-
 /** The public surface of the server device that the flow cards rely on.
  * Homey types `args.device` loosely, so we narrow it to this interface
- * instead of casting through `any`. */
+ * instead of casting through `any`.
+ * Structural mirror of ServerDevice's public surface — keep in sync with the class. */
 interface IloServerDevice extends Homey.Device {
   actionPower(reset: DeviceResetType): Promise<void>;
-  getHealthValue(): string;
+  getHealthValue(): HealthState;
   isPoweredOn(): boolean;
 }
 

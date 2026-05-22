@@ -1,6 +1,6 @@
 import Homey from 'homey';
 import { IloClient } from '../../lib/IloClient';
-import type { HealthState } from '../../lib/redfish-types';
+import type { HealthState, DeviceResetType } from '../../lib/redfish-types';
 
 interface ServerStore {
   host: string;
@@ -8,12 +8,10 @@ interface ServerStore {
   password: string;
 }
 
-/** Reset types exposed to flow actions / the on-off listener. */
-type DeviceResetType = 'On' | 'ForceOff' | 'GracefulShutdown' | 'GracefulRestart' | 'ForceRestart';
-
 /** The driver's flow-trigger surface. The driver uses `export =` (module.exports),
  * which is awkward to import as a type, so we narrow `this.driver` to this
- * local interface instead of casting through `any`. */
+ * local interface instead of casting through `any`.
+ * Structural mirror of ServerDriver's public surface — keep in sync with the class. */
 interface IloServerDriver extends Homey.Driver {
   triggerHealthChanged(device: Homey.Device, health: string): void;
   triggerHealthCritical(device: Homey.Device): void;
