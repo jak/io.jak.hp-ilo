@@ -24,9 +24,18 @@ export interface IloClientOptions {
   transport?: HttpRequestFn;
   /** Base delay between transient (503/429) retries, in ms. Set to 0 in tests. */
   retryDelayMs?: number;
+  /** Per-request timeout in ms; an unreachable host fails fast instead of hanging. */
+  timeoutMs?: number;
 }
 
-function defaultTransport(allowSelfSigned: boolean): HttpRequestFn {
+const DEFAULT_TIMEOUT_MS = 15000;
+
+/** True when an error is the AbortError raised by an AbortSignal timeout. */
+export function isTimeoutAbort(err: unknown): boolean {
+  return err instanceof Error && (err.name === 'AbortError' || err.name === 'TimeoutError');
+}
+
+function defaultTransport(allowSelfSigned: boolean, timeoutMs: number): HttpRequestFn {
   const dispatcher = allowSelfSigned
     ? new Agent({ connect: { rejectUnauthorized: false } })
     : undefined;
@@ -38,7 +47,18 @@ function defaultTransport(allowSelfSigned: boolean): HttpRequestFn {
     throw new Error('Global fetch is unavailable; Node 18+ is required');
   }
   return async (url, init) => {
-    const res = await fetchFn(url, { ...init, dispatcher } as any);
+    // Abort the request if the host is unreachable/slow, so a probe or poll
+    // surfaces a clear error in the pairing UI instead of hanging forever.
+    const signal = (AbortSignal as any).timeout(timeoutMs);
+    let res: any;
+    try {
+      res = await fetchFn(url, { ...init, dispatcher, signal } as any);
+    } catch (err) {
+      if (isTimeoutAbort(err)) {
+        throw new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s`);
+      }
+      throw err;
+    }
     const headers: Record<string, string> = {};
     res.headers.forEach((v: string, k: string) => {
       headers[k.toLowerCase()] = v;
@@ -75,7 +95,7 @@ export class IloClient {
     this.host = opts.host;
     this.username = opts.username;
     this.password = opts.password;
-    this.transport = opts.transport ?? defaultTransport(opts.allowSelfSigned ?? true);
+    this.transport = opts.transport ?? defaultTransport(opts.allowSelfSigned ?? true, opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
     this.retryDelayMs = opts.retryDelayMs ?? 500;
   }
 

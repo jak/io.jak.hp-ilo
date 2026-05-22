@@ -2,23 +2,54 @@
   function onHomeyReady(Homey) {
     Homey.setTitle('Connect to iLO');
 
-    const btn = document.getElementById('connect');
-    btn.addEventListener('click', async () => {
-      btn.disabled = true;
-      try {
-        await Homey.emit('manual_login', {
-          host: document.getElementById('host').value.trim(),
-          username: document.getElementById('username').value.trim(),
-          password: document.getElementById('password').value,
-          allowSelfSigned: document.getElementById('selfsigned').checked,
-        });
-        Homey.showView('list_devices');
-      } catch (err) {
-        Homey.alert(err && err.message ? err.message : String(err));
-        btn.disabled = false;
-      }
-    });
+    var btn = document.getElementById('connect');
+    var status = document.getElementById('status');
 
+    function setStatus(text) {
+      status.textContent = text || '';
+    }
+
+    function onConnect() {
+      var host = document.getElementById('host').value.trim();
+      var username = document.getElementById('username').value.trim();
+      var password = document.getElementById('password').value;
+      var allowSelfSigned = document.getElementById('selfsigned').checked;
+
+      // Client-side validation so we never round-trip an obviously empty form.
+      if (!host || !username) {
+        Homey.alert('Please enter both a host/IP and a username.', 'warning');
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus('Connecting…');
+
+      // Homey.emit returns a Promise that resolves with the driver
+      // setHandler('manual_login') return value, and REJECTS if that
+      // handler throws. Use .then/.catch (not async/await) for older
+      // webview safety.
+      Homey.emit('manual_login', {
+        host: host,
+        username: username,
+        password: password,
+        allowSelfSigned: allowSelfSigned,
+      })
+        .then(function () {
+          // Validation passed in the driver — advance to the device list.
+          Homey.showView('list_devices');
+        })
+        .catch(function (err) {
+          var message = err && err.message ? err.message : String(err);
+          Homey.alert(message, 'error');
+          setStatus('');
+          btn.disabled = false;
+        });
+    }
+
+    btn.addEventListener('click', onConnect);
+
+    // Call ready() only after the DOM is in place and the listener is
+    // attached, so the view is interactive the moment it becomes visible.
     Homey.ready();
   }
 </script>
@@ -35,9 +66,11 @@
   <label class="homey-form-label" for="password">Password</label>
   <input id="password" class="homey-form-input" type="password" />
 </div>
-<label class="homey-form-checkbox">
-  <input id="selfsigned" type="checkbox" checked />
-  <span class="homey-form-checkbox-checkmark"></span>
-  <span class="homey-form-checkbox-text">Allow self-signed certificate</span>
-</label>
+<div class="homey-form-group">
+  <label for="selfsigned">
+    <input id="selfsigned" type="checkbox" checked />
+    Allow self-signed certificate
+  </label>
+</div>
 <button id="connect" class="homey-button-primary-full">Connect</button>
+<p id="status" style="text-align: center; margin-top: 0.5em;"></p>

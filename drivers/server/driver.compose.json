@@ -39,7 +39,7 @@
     }
   ],
   "pair": [
-    { "id": "login", "navigation": { "next": "list_devices" } },
+    { "id": "login" },
     { "id": "list_devices", "template": "list_devices", "navigation": { "next": "add_devices" } },
     { "id": "add_devices", "template": "add_devices" }
   ]

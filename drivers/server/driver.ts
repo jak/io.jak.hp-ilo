@@ -41,6 +41,9 @@ module.exports = class ServerDriver extends Homey.Driver {
     let info: Awaited<ReturnType<IloClient['probe']>> | undefined;
 
     session.setHandler('manual_login', async (data: PairCreds) => {
+      // Diagnostic logging proves the handler is reached and which host it
+      // tried; the password is intentionally never logged.
+      this.log('manual_login received', { host: data.host, username: data.username, allowSelfSigned: data.allowSelfSigned });
       if (!data.host || !data.username) throw new Error('Host and username are required');
       const client = new IloClient({
         host: data.host,
@@ -50,8 +53,10 @@ module.exports = class ServerDriver extends Homey.Driver {
       });
       try {
         info = await client.probe(); // throws on bad host/creds/TLS
+        this.log('manual_login probe ok', { name: info.name, serialNumber: info.serialNumber });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
+        this.error('manual_login probe failed:', message);
         throw new Error(`Could not connect: ${message}`);
       }
       creds = data;
