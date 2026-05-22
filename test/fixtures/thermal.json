@@ -26,6 +26,14 @@
       "PhysicalContext": "CPU",
       "ReadingCelsius": 40,
       "Status": { "Health": "OK", "State": "Enabled" }
+    },
+    {
+      "@odata.id": "/redfish/v1/Chassis/1/Thermal#/Temperatures/3",
+      "MemberId": "3",
+      "Name": "11-P2 CPU 2",
+      "PhysicalContext": "CPU",
+      "ReadingCelsius": 38,
+      "Status": { "Health": "OK", "State": "Enabled" }
     }
   ],
   "Fans": [

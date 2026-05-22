@@ -22,6 +22,8 @@ export interface IloClientOptions {
   allowSelfSigned?: boolean;
   /** Injectable transport for testing; defaults to fetch + undici Agent. */
   transport?: HttpRequestFn;
+  /** Base delay between transient (503/429) retries, in ms. Set to 0 in tests. */
+  retryDelayMs?: number;
 }
 
 function defaultTransport(allowSelfSigned: boolean): HttpRequestFn {
@@ -32,6 +34,9 @@ function defaultTransport(allowSelfSigned: boolean): HttpRequestFn {
   // so reach it via globalThis. The `dispatcher` option is undici-specific and
   // not in the DOM RequestInit type — hence the `as any` cast (intentional).
   const fetchFn: (url: string, init: any) => Promise<any> = (globalThis as any).fetch;
+  if (typeof fetchFn !== 'function') {
+    throw new Error('Global fetch is unavailable; Node 18+ is required');
+  }
   return async (url, init) => {
     const res = await fetchFn(url, { ...init, dispatcher } as any);
     const headers: Record<string, string> = {};
@@ -60,6 +65,9 @@ export class IloClient {
   private readonly username: string;
   private readonly password: string;
   private readonly transport: HttpRequestFn;
+  private readonly retryDelayMs: number;
+  /** Max retries for transient (503/429) responses, beyond the first attempt. */
+  private static readonly MAX_TRANSIENT_RETRIES = 2;
   private authToken?: string;
   private sessionUri?: string;
 
@@ -68,10 +76,25 @@ export class IloClient {
     this.username = opts.username;
     this.password = opts.password;
     this.transport = opts.transport ?? defaultTransport(opts.allowSelfSigned ?? true);
+    this.retryDelayMs = opts.retryDelayMs ?? 500;
   }
 
   private url(path: string): string {
     return `https://${this.host}${path}`;
+  }
+
+  private sleep(ms: number): Promise<void> {
+    // One-shot delay that resolves (and self-clears) immediately; this lib is
+    // intentionally Homey-independent so it can't use this.homey.setTimeout.
+    // eslint-disable-next-line homey-app/global-timers
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /** Delay before a transient retry; honors a numeric Retry-After header if present. */
+  private retryDelayFor(res: HttpResponse): number {
+    const retryAfter = Number(res.headers['retry-after']);
+    if (Number.isFinite(retryAfter) && retryAfter > 0) return retryAfter * 1000;
+    return this.retryDelayMs;
   }
 
   async login(): Promise<void> {
@@ -97,17 +120,31 @@ export class IloClient {
 
   private async request(method: string, path: string, body?: unknown, _retry = true): Promise<HttpResponse> {
     if (!this.authToken) await this.login();
-    const res = await this.transport(this.url(path), {
-      method,
-      headers: this.authHeaders(),
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
-    if (res.status === 401 && _retry) {
-      this.authToken = undefined;
-      await this.login();
-      return this.request(method, path, body, false);
+
+    // Bounded retry loop for transient 503/429 responses. The 401 re-auth-once
+    // path is handled separately below and is independent of this counter.
+    let transientAttempts = 0;
+    for (;;) {
+      const res = await this.transport(this.url(path), {
+        method,
+        headers: this.authHeaders(),
+        body: body === undefined ? undefined : JSON.stringify(body),
+      });
+
+      if (res.status === 401 && _retry) {
+        this.authToken = undefined;
+        await this.login();
+        return this.request(method, path, body, false);
+      }
+
+      if ((res.status === 503 || res.status === 429) && transientAttempts < IloClient.MAX_TRANSIENT_RETRIES) {
+        transientAttempts += 1;
+        await this.sleep(this.retryDelayFor(res));
+        continue;
+      }
+
+      return res;
     }
-    return res;
   }
 
   async getJson(path: string): Promise<any> {

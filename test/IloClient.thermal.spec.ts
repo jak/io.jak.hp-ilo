@@ -9,7 +9,7 @@ import { loggedIn } from './helpers/loggedIn';
 const thermal = JSON.parse(readFileSync(join(__dirname, 'fixtures', 'thermal.json'), 'utf8'));
 
 describe('IloClient.getThermal', () => {
-  it('extracts inlet temp, hottest CPU temp, and max fan percent', async () => {
+  it('extracts inlet temp, hottest CPU temp (max over multiple CPUs), and max fan percent', async () => {
     const t = new FakeTransport();
     loggedIn(t);
     t.on('GET', '/redfish/v1/Chassis/', { status: 200, headers: {}, body: { Members: [{ '@odata.id': '/redfish/v1/Chassis/1/' }] } });
@@ -18,8 +18,29 @@ describe('IloClient.getThermal', () => {
     await c.login();
     const r = await c.getThermal();
     expect(r.inletTemp).to.equal(22);
+    // fixture has two CPU sensors (40 and 38); cpuTemp must be the hottest
     expect(r.cpuTemp).to.equal(40);
     expect(r.maxFanPercent).to.equal(11);
+  });
+
+  it('matches the inlet sensor by Name (/inlet ambient/i) when PhysicalContext is not "Intake"', async () => {
+    const t = new FakeTransport();
+    loggedIn(t);
+    t.on('GET', '/redfish/v1/Chassis/', { status: 200, headers: {}, body: { Members: [{ '@odata.id': '/redfish/v1/Chassis/1/' }] } });
+    t.on('GET', '/redfish/v1/Chassis/1/Thermal', {
+      status: 200,
+      headers: {},
+      body: {
+        Temperatures: [
+          { Name: '01-Inlet Ambient', PhysicalContext: 'Chassis', ReadingCelsius: 19 },
+        ],
+        Fans: [],
+      },
+    });
+    const c = new IloClient({ host: 'h', username: 'u', password: 'p', transport: t.fn });
+    await c.login();
+    const r = await c.getThermal();
+    expect(r.inletTemp).to.equal(19);
   });
 
   it('returns undefined fields when sensors are missing (never throws)', async () => {
