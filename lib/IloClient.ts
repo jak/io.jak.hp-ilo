@@ -129,4 +129,24 @@ export class IloClient {
     this.authToken = undefined;
     this.sessionUri = undefined;
   }
+
+  private _systemUri?: string;
+  private _chassisUri?: string;
+
+  private async firstMember(collectionPath: string): Promise<string> {
+    const coll = await this.getJson(collectionPath);
+    const members = coll?.Members;
+    if (!Array.isArray(members) || members.length === 0) throw new Error(`No members in ${collectionPath}`);
+    return members[0]['@odata.id'];
+  }
+
+  async systemUri(): Promise<string> {
+    if (!this._systemUri) this._systemUri = await this.firstMember('/redfish/v1/Systems/');
+    return this._systemUri;
+  }
+
+  async chassisUri(): Promise<string> {
+    if (!this._chassisUri) this._chassisUri = await this.firstMember('/redfish/v1/Chassis/');
+    return this._chassisUri;
+  }
 }
