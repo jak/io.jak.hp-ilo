@@ -36,6 +36,9 @@ module.exports = class ServerDriver extends Homey.Driver {
 
   async onPair(session: PairSession) {
     let creds: PairCreds | undefined;
+    // Cache the identity from the manual_login probe so list_devices can reuse
+    // it instead of opening a second iLO session (sessions are scarce).
+    let info: Awaited<ReturnType<IloClient['probe']>> | undefined;
 
     session.setHandler('manual_login', async (data: PairCreds) => {
       if (!data.host || !data.username) throw new Error('Host and username are required');
@@ -46,7 +49,7 @@ module.exports = class ServerDriver extends Homey.Driver {
         allowSelfSigned: data.allowSelfSigned,
       });
       try {
-        await client.probe(); // throws on bad host/creds/TLS
+        info = await client.probe(); // throws on bad host/creds/TLS
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         throw new Error(`Could not connect: ${message}`);
@@ -57,16 +60,26 @@ module.exports = class ServerDriver extends Homey.Driver {
 
     session.setHandler('list_devices', async () => {
       if (!creds) return [];
-      const client = new IloClient({
-        host: creds.host,
-        username: creds.username,
-        password: creds.password,
-        allowSelfSigned: creds.allowSelfSigned,
-      });
-      const info = await client.probe();
+      // Reuse the identity captured during manual_login; only probe again if it
+      // is somehow missing (e.g. unusual pairing navigation) — one login normally.
+      if (!info) {
+        const client = new IloClient({
+          host: creds.host,
+          username: creds.username,
+          password: creds.password,
+          allowSelfSigned: creds.allowSelfSigned,
+        });
+        info = await client.probe();
+      }
+      // data.id is immutable and must be unique per driver. Prefer the stable
+      // serial number; fall back to the host (unique per device) when the
+      // server reports no serial, so two serial-less servers don't collide.
+      const id = info.serialNumber && info.serialNumber !== 'unknown'
+        ? info.serialNumber
+        : creds.host;
       return [{
         name: `${info.name} (${creds.host})`,
-        data: { id: info.serialNumber },
+        data: { id },
         store: {
           host: creds.host,
           username: creds.username,
