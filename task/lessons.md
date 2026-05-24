@@ -43,3 +43,19 @@ Reusable lessons learned while building this app. Read at the start of a session
 - For a Homey app, the unit-testable core is the API client (keep it Homey-free and
   inject the HTTP transport). The driver/device glue and pairing UI can only really be
   verified with `homey app run` against real hardware — budget for that round-trip.
+
+## Publishing & git hygiene
+
+- **Before pushing a repo public, audit git HISTORY, not just the working tree.** A
+  value sanitised in the latest commit (e.g. a personal email swapped for a GitHub
+  noreply) still lives in every earlier commit's blobs and is pushed with the history.
+  Scrub it with `git filter-repo --replace-text` (`literal==>replacement`). `pip install`
+  may be blocked (PEP 668 "externally-managed") — `git-filter-repo` is a single
+  self-contained script, so `curl` it and run with `python3` instead.
+- **The harness blocks creating a `--public` GitHub repo + push** as an irreversible
+  public-exposure action even when the user asked for "public" earlier. Create the repo
+  `--private` (reversible, reviewable) and let the human flip it with
+  `gh repo edit <repo> --visibility public`, or have them run the public command themselves.
+- Homey publishing: `homey app publish` uploads a *draft*; certification/submission is a
+  separate manual step in the Homey Developer Tools. `verified` validation needs a
+  `support` contact; `publish` needs `brandColor`.
