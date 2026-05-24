@@ -86,19 +86,53 @@ properly trusted certificate on your iLO, turn this off for strict validation.
   polls `IloClient` and maps results to capabilities (logging out of the iLO
   session on teardown so sessions aren't leaked), and the Flow cards.
 
+### How sensor values are selected
+
+Each tile distills a single value from what may be many Redfish sensors. The
+selection rules, and why:
+
+- **Power state & control.** The on/off tile reflects `PowerState` (`On`/`Off`;
+  transitional `PoweringOn`/`PoweringOff` are ignored until settled). Toggling
+  **off sends a graceful ACPI shutdown** (`GracefulShutdown`), never a hard cut —
+  the destructive variants (force off, cold boot) are reachable only as explicit
+  Flow actions, so the tile can't accidentally kill a running server. Every reset
+  is validated at runtime against the iLO's advertised
+  `ResetType@Redfish.AllowableValues` before it is sent.
+- **Power draw (W).** `…/Chassis/{id}/Power` → `PowerControl[0].PowerConsumedWatts`.
+  Models without metering hardware report `0` (see the note under Capabilities).
+- **Inlet temperature.** The intake/ambient sensor — identified by
+  `PhysicalContext: "Intake"`, or a sensor whose name contains "Inlet Ambient" —
+  i.e. the temperature of air entering the chassis, the standard ambient reference.
+- **CPU temperature — the *hottest* sensor.** A server can expose several CPU
+  sensors (dual-socket → P1/P2, sometimes package + per-area). The tile reports
+  the **maximum** `ReadingCelsius` across all sensors with `PhysicalContext: "CPU"`.
+  Rationale: for one tile the worst-case CPU is the meaningful one — it's closest
+  to the thermal/throttling limit, so a "CPU too hot" Flow triggers on the right
+  value. Averaging would mask a single hot socket/core.
+- **Fan speed (%) — the *highest* fan.** Servers run many fans at independent
+  speeds. The tile reports the **maximum** across all fans reporting in percent
+  (`ReadingUnits: "Percent"`). Rationale: the busiest fan reflects the system's
+  current cooling effort / thermal stress; an average would understate how hard
+  the cooling is working. (iLO reports fan speed as a percentage, not RPM.)
+- **Health.** Uses `Status.HealthRollup` — the **aggregated** health of the system
+  and all subcomponents — falling back to `Status.Health` when no rollup is
+  present, mapped to `OK` / `Warning` / `Critical`. The rollup means a fault in any
+  subsystem (PSU, memory, drive, …) surfaces on the single Health tile.
+
+Missing sensors are skipped, never fatal: a sensor a given server doesn't expose
+simply leaves its capability un-updated rather than erroring or showing a bogus value.
+
 ### iLO 5 vs iLO 6
 
-The client targets resources both firmwares support, with fallbacks:
+The client targets resources both firmwares support and falls back across their
+differences (the *selection* of which value to show is covered above):
 
-- **Power draw:** `…/Chassis/{id}/Power` → `PowerControl[0].PowerConsumedWatts`,
-  falling back to `…/EnvironmentMetrics` → `PowerWatts.Reading`.
-- **Thermal:** `…/Chassis/{id}/Thermal` — inlet by `PhysicalContext: Intake`
-  (or a name containing "Inlet Ambient"), CPU by `PhysicalContext: CPU`
-  (hottest), fans by `ReadingUnits: Percent` (max).
-- **Power control:** reset types are validated at runtime against the iLO's own
-  `ResetType@Redfish.AllowableValues` before being sent.
+- **Power draw:** prefers the legacy `…/Chassis/{id}/Power` resource, falling back
+  to `…/EnvironmentMetrics` → `PowerWatts.Reading` on firmware that omits it.
+- **Thermal:** reads `…/Chassis/{id}/Thermal`, matching sensors defensively by
+  `PhysicalContext`/name so enum values deprecated across firmware don't break it.
 - **Discovery:** the System and Chassis member URIs are discovered from their
-  collections rather than assuming `/1`.
+  collections rather than assuming `/1` (chassis ids in particular vary by model).
 
 ## Development
 
