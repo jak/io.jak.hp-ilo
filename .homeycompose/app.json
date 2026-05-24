@@ -1,11 +1,15 @@
 {
   "id": "io.jak.hp-ilo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
-  "platforms": ["local"],
-  "name": { "en": "HP iLO" },
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "HP iLO"
+  },
   "description": {
     "en": "Manage and monitor HPE servers via the iLO Redfish API",
     "nl": "Beheer en bewaak HPE-servers via de iLO Redfish API",
@@ -14,7 +18,9 @@
     "es": "Gestiona y supervisa servidores HPE a través de la API Redfish de iLO",
     "it": "Gestisci e monitora i server HPE tramite l'API Redfish di iLO"
   },
-  "category": ["tools"],
+  "category": [
+    "tools"
+  ],
   "brandColor": "#01A982",
   "permissions": [],
   "images": {
@@ -22,11 +28,16 @@
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
   },
-  "author": { "name": "jak", "email": "191585+jak@users.noreply.github.com" },
+  "author": {
+    "name": "jak",
+    "email": "191585+jak@users.noreply.github.com"
+  },
   "support": "https://github.com/jak/io.jak.hp-ilo/issues",
   "homepage": "https://github.com/jak/io.jak.hp-ilo",
   "source": "https://github.com/jak/io.jak.hp-ilo",
-  "bugs": { "url": "https://github.com/jak/io.jak.hp-ilo/issues" },
+  "bugs": {
+    "url": "https://github.com/jak/io.jak.hp-ilo/issues"
+  },
   "contributing": {
     "donate": {
       "githubSponsors": {
@@ -35,11 +46,65 @@
     }
   },
   "tags": {
-    "en": ["iLO", "HPE", "ProLiant", "server", "Redfish", "BMC", "remote management", "monitoring"],
-    "nl": ["iLO", "HPE", "ProLiant", "server", "Redfish", "BMC", "beheer op afstand", "monitoring"],
-    "de": ["iLO", "HPE", "ProLiant", "Server", "Redfish", "BMC", "Fernverwaltung", "Überwachung"],
-    "fr": ["iLO", "HPE", "ProLiant", "serveur", "Redfish", "BMC", "gestion à distance", "surveillance"],
-    "es": ["iLO", "HPE", "ProLiant", "servidor", "Redfish", "BMC", "gestión remota", "monitorización"],
-    "it": ["iLO", "HPE", "ProLiant", "server", "Redfish", "BMC", "gestione remota", "monitoraggio"]
+    "en": [
+      "iLO",
+      "HPE",
+      "ProLiant",
+      "server",
+      "Redfish",
+      "BMC",
+      "remote management",
+      "monitoring"
+    ],
+    "nl": [
+      "iLO",
+      "HPE",
+      "ProLiant",
+      "server",
+      "Redfish",
+      "BMC",
+      "beheer op afstand",
+      "monitoring"
+    ],
+    "de": [
+      "iLO",
+      "HPE",
+      "ProLiant",
+      "Server",
+      "Redfish",
+      "BMC",
+      "Fernverwaltung",
+      "Überwachung"
+    ],
+    "fr": [
+      "iLO",
+      "HPE",
+      "ProLiant",
+      "serveur",
+      "Redfish",
+      "BMC",
+      "gestion à distance",
+      "surveillance"
+    ],
+    "es": [
+      "iLO",
+      "HPE",
+      "ProLiant",
+      "servidor",
+      "Redfish",
+      "BMC",
+      "gestión remota",
+      "monitorización"
+    ],
+    "it": [
+      "iLO",
+      "HPE",
+      "ProLiant",
+      "server",
+      "Redfish",
+      "BMC",
+      "gestione remota",
+      "monitoraggio"
+    ]
   }
 }
