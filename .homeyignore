@@ -2,3 +2,4 @@
 # (Homey already ignores *.ts, tsconfig.json, dotfiles and node_modules by default.)
 test/
 docs/
+task/
