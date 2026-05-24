@@ -30,7 +30,7 @@ firmware versions and server models.
 
 | Capability | What it shows / does |
 | --- | --- |
-| **Power** (`onoff`) | On = power on; Off = **graceful** OS shutdown. Also reflects current power state. |
+| **Power** (`onoff`) | **Read-only** power-state indicator (on/off). Not tappable — all power control is via Flow actions, so the tile can't accidentally shut down the server. |
 | **Power meter** (`measure_power`) | Current power draw in watts. Reads `0` on hardware without power metering — see note below. |
 | **Inlet temperature** (`measure_temperature`) | Inlet/ambient temperature (°C). |
 | **CPU temperature** (`measure_temperature.cpu`) | **Hottest** CPU sensor (max of all sensors with Redfish `PhysicalContext: CPU`), i.e. the worst-case / closest-to-throttling reading. |
@@ -51,9 +51,10 @@ firmware versions and server models.
 - **Actions:** *Turn on*, *Graceful shutdown*, *Force power off*, *Restart (warm)*,
   *Cold boot (force restart)*.
 
-The Homey on/off toggle deliberately performs a **graceful** shutdown. The
-abrupt options (force off, cold boot) are only available as explicit Flow
-actions, so you can't accidentally hard-cut a running server from the tile.
+The device tile is **status-only**: the on/off indicator is read-only and every
+power action — on, graceful shutdown, force off, warm reset, cold boot — is an
+explicit Flow action. This is deliberate: a server shouldn't be shut down by an
+accidental tap on a tile, so power control is always intentional.
 
 ## Pairing
 
@@ -96,13 +97,13 @@ properly trusted certificate on your iLO, turn this off for strict validation.
 Each tile distills a single value from what may be many Redfish sensors. The
 selection rules, and why:
 
-- **Power state & control.** The on/off tile reflects `PowerState` (`On`/`Off`;
-  transitional `PoweringOn`/`PoweringOff` are ignored until settled). Toggling
-  **off sends a graceful ACPI shutdown** (`GracefulShutdown`), never a hard cut —
-  the destructive variants (force off, cold boot) are reachable only as explicit
-  Flow actions, so the tile can't accidentally kill a running server. Every reset
-  is validated at runtime against the iLO's advertised
-  `ResetType@Redfish.AllowableValues` before it is sent.
+- **Power state & control.** The on/off tile is a **read-only** indicator of
+  `PowerState` (`On`/`Off`; transitional `PoweringOn`/`PoweringOff` are ignored
+  until settled) — it can't be tapped. All power changes go through Flow actions
+  (turn on, graceful shutdown `GracefulShutdown`, force off `ForceOff`, warm reset
+  `GracefulRestart`, cold boot `ForceRestart`), so a server is never shut down by
+  an accidental tile tap. Every reset is validated at runtime against the iLO's
+  advertised `ResetType@Redfish.AllowableValues` before it is sent.
 - **Power draw (W).** `…/Chassis/{id}/Power` → `PowerControl[0].PowerConsumedWatts`.
   Models without metering hardware report `0` (see the note under Capabilities).
 - **Inlet temperature.** The intake/ambient sensor — identified by

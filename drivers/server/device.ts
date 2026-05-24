@@ -26,11 +26,9 @@ module.exports = class ServerDevice extends Homey.Device {
   async onInit() {
     this.buildClient();
 
-    this.registerCapabilityListener('onoff', async (value: boolean) => {
-      if (!this.client) throw new Error('Device is not connected');
-      await this.client.setPower(value ? 'On' : 'GracefulShutdown');
-    });
-
+    // The onoff capability is read-only (a status indicator). All power control
+    // is via Flow actions, so a running server can't be shut down by an
+    // accidental tap on the device tile.
     await this.setUnavailable(this.homey.__('connecting')).catch(() => undefined);
     await this.poll();
     this.startPolling();

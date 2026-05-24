@@ -361,7 +361,9 @@
             "fr": "Alimentation",
             "es": "Alimentación",
             "it": "Alimentazione"
-          }
+          },
+          "setable": false,
+          "getable": true
         },
         "measure_temperature": {
           "title": {

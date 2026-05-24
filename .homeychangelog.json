@@ -3,6 +3,6 @@
     "en": "Initial release. Monitor and control HPE servers via iLO 5/6 (Redfish): power on/off (graceful shutdown), power consumption, inlet and CPU temperature, fan speed, and health status, with Flow cards for power control and health alerts."
   },
   "1.0.1": {
-    "en": "Added tags for Homey app store"
+    "en": "The power tile is now read-only — all power control (on, graceful shutdown, force off, reset) is via Flow actions, so a server can't be shut down by an accidental tap. Added six-language translations, a donate button, and Homey App Store tags."
   }
 }
