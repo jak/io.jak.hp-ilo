@@ -26,11 +26,17 @@ firmware versions and server models.
 | Capability | What it shows / does |
 | --- | --- |
 | **Power** (`onoff`) | On = power on; Off = **graceful** OS shutdown. Also reflects current power state. |
-| **Power meter** (`measure_power`) | Current power draw in watts. |
+| **Power meter** (`measure_power`) | Current power draw in watts. Reads `0` on hardware without power metering — see note below. |
 | **Inlet temperature** (`measure_temperature`) | Inlet/ambient temperature (°C). |
-| **CPU temperature** (`measure_temperature.cpu`) | Hottest CPU sensor (°C). |
+| **CPU temperature** (`measure_temperature.cpu`) | **Hottest** CPU sensor (max of all sensors with Redfish `PhysicalContext: CPU`), i.e. the worst-case / closest-to-throttling reading. |
 | **Fan speed** (`measure_fan_speed`) | Highest fan speed (%). |
 | **Health** (`ilo_health`) | Overall server health: OK / Warning / Critical. |
+
+> **Power metering:** entry-level servers (e.g. HPE ProLiant ML110 Gen10) don't
+> include power-draw metering hardware. On those, iLO reports
+> `PowerConsumedWatts: 0`, so the power tile shows **0 W** — this is the server's
+> actual response, not an error. Models with metered/redundant power supplies
+> report real wattage.
 
 ### Flow cards
 
@@ -116,16 +122,18 @@ plus a reachable iLO to pair against.
   injected HTTP transport and Redfish-shaped fixtures.
 - **Validated:** the Homey manifest passes `homey app validate` at `debug` and
   `publish` levels.
-- **Confirmed on real hardware:** pairing and the production HTTP transport
-  (global `fetch` + an `undici` agent for self-signed TLS) were verified via
-  `homey app run` against a live **iLO 5 (HPE ProLiant ML110 Gen10)** — session
-  login, the self-signed-cert path, and the system read all succeeded.
-- **Not yet independently confirmed on hardware:** the full periodic poll of the
-  Chassis `Power`/`Thermal` resources and the power-control actions (graceful
-  shutdown / force off / reset). These use the same unit-tested client paths,
-  but exercise them against your specific firmware; verify before relying on
-  power control in automations. The `verified` validation level additionally
-  requires a `support` contact, which is intentionally left unset.
+- **Confirmed on real hardware** (`homey app run` against a live **iLO 5, HPE
+  ProLiant ML110 Gen10**): pairing and the production HTTP transport (global
+  `fetch` + an `undici` agent for self-signed TLS); session login and the
+  self-signed-cert path; and the periodic poll — power state, inlet/CPU
+  temperatures and fan speed all read correctly, and power draw is reported
+  faithfully (0 W on this non-metered model).
+- **Not yet independently confirmed on hardware:** the power-control actions
+  (graceful shutdown / force off / reset). These use the same unit-tested client
+  path as the reads, but are destructive, so they were not exercised — verify
+  before relying on power control in automations. The `verified` validation
+  level additionally requires a `support` contact, which is intentionally left
+  unset.
 
 ## Design & plan
 
