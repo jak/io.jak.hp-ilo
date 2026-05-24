@@ -1,0 +1,22 @@
+{
+  "all": true,
+  "include": [
+    "lib/**/*.ts"
+  ],
+  "exclude": [
+    "test/**",
+    "**/*.d.ts"
+  ],
+  "extension": [
+    ".ts"
+  ],
+  "reporter": [
+    "text",
+    "html"
+  ],
+  "check-coverage": false,
+  "statements": true,
+  "branches": true,
+  "functions": true,
+  "lines": true
+}

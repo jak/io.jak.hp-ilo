@@ -37,4 +37,26 @@ describe('IloClient.login', () => {
     expect(err).to.be.instanceOf(Error);
     expect(err!.message).to.match(/Bad creds|credential/i);
   });
+
+  it('uses the HTTP-status fallback message when a non-201 has no extended error', async () => {
+    const t = new FakeTransport();
+    t.on('POST', '/redfish/v1/SessionService/Sessions/', { status: 503, headers: {}, body: {} });
+    const client = new IloClient({ host: '10.0.0.5', username: 'admin', password: 'p', transport: t.fn });
+    let err: Error | undefined;
+    await client.login().catch((e) => { err = e; });
+    expect(err).to.be.instanceOf(Error);
+    expect(err!.message).to.equal('Login failed (HTTP 503)');
+  });
+
+  it('throws when login returns 201 but omits the X-Auth-Token header', async () => {
+    const t = new FakeTransport();
+    t.on('POST', '/redfish/v1/SessionService/Sessions/', {
+      status: 201, headers: { location: '/redfish/v1/SessionService/Sessions/abc/' }, body: {},
+    });
+    const client = new IloClient({ host: '10.0.0.5', username: 'admin', password: 'p', transport: t.fn });
+    let err: Error | undefined;
+    await client.login().catch((e) => { err = e; });
+    expect(err).to.be.instanceOf(Error);
+    expect(err!.message).to.match(/no X-Auth-Token/i);
+  });
 });

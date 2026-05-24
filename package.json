@@ -18,7 +18,8 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore .",
-    "test": "mocha"
+    "test": "mocha",
+    "test:coverage": "c8 --reporter=text --reporter=html mocha"
   },
   "dependencies": {
     "undici": "^6.21.0"
@@ -29,6 +30,7 @@
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
     "@types/mocha": "^10.0.10",
     "@types/node": "^16.18.126",
+    "c8": "^11.0.0",
     "chai": "^4.5.0",
     "eslint": "^7.32.0",
     "eslint-config-athom": "^3.1.5",

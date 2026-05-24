@@ -4,5 +4,12 @@
     "allowJs": true,
     "outDir": ".homeybuild/"
   },
-  "exclude": ["test", ".homeybuild", "node_modules"]
+  "exclude": ["test", ".homeybuild", "node_modules"],
+  "ts-node": {
+    "compilerOptions": {
+      "sourceMap": true,
+      "inlineSourceMap": true,
+      "inlineSources": true
+    }
+  }
 }

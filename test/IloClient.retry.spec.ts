@@ -30,6 +30,37 @@ describe('IloClient transient-error retry', () => {
     expect(body.PowerState).to.equal('Off');
   });
 
+  it('honors a numeric Retry-After header for the transient backoff delay', async () => {
+    const t = new FakeTransport();
+    loggedIn(t);
+    // Retry-After of 2s -> retryDelayFor returns 2000ms. We assert it is honored
+    // by spying on the client's sleep() so the test stays instant.
+    t.on('GET', '/redfish/v1/Systems/1/', { status: 503, headers: { 'retry-after': '2' }, body: {} });
+    t.on('GET', '/redfish/v1/Systems/1/', { status: 200, headers: {}, body: { PowerState: 'On' } });
+    const c = new IloClient({ host: 'h', username: 'u', password: 'p', transport: t.fn, retryDelayMs: 0 });
+    const slept: number[] = [];
+    (c as any).sleep = (ms: number) => { slept.push(ms); return Promise.resolve(); };
+    await c.login();
+    const body = await (c as any).getJson('/redfish/v1/Systems/1/');
+    expect(body.PowerState).to.equal('On');
+    // The numeric Retry-After (2s) takes precedence over retryDelayMs (0).
+    expect(slept).to.deep.equal([2000]);
+  });
+
+  it('ignores a non-numeric Retry-After and falls back to retryDelayMs', async () => {
+    const t = new FakeTransport();
+    loggedIn(t);
+    t.on('GET', '/redfish/v1/Systems/1/', { status: 429, headers: { 'retry-after': 'soon' }, body: {} });
+    t.on('GET', '/redfish/v1/Systems/1/', { status: 200, headers: {}, body: { PowerState: 'Off' } });
+    const c = new IloClient({ host: 'h', username: 'u', password: 'p', transport: t.fn, retryDelayMs: 0 });
+    const slept: number[] = [];
+    (c as any).sleep = (ms: number) => { slept.push(ms); return Promise.resolve(); };
+    await c.login();
+    const body = await (c as any).getJson('/redfish/v1/Systems/1/');
+    expect(body.PowerState).to.equal('Off');
+    expect(slept).to.deep.equal([0]);
+  });
+
   it('bounds retries: a persistent 503 eventually throws (does not loop)', async () => {
     const t = new FakeTransport();
     loggedIn(t);

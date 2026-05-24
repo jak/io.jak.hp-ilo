@@ -1,5 +1,6 @@
 import Homey from 'homey';
 import { IloClient } from '../../lib/IloClient';
+import RESET_BY_CARD from '../../lib/flow-actions';
 import type { HealthState, DeviceResetType } from '../../lib/redfish-types';
 
 /** The PairSession type is not exported at the top level of the Homey types,
@@ -106,15 +107,8 @@ module.exports = class ServerDriver extends Homey.Driver {
     this.homey.flow.getConditionCard('health_is_ok')
       .registerRunListener(async (args: { device: IloServerDevice }) => args.device.getHealthValue() === 'ok');
 
-    // Actions: card id -> Redfish reset type
-    const resetByCard: Record<string, DeviceResetType> = {
-      turn_on: 'On',
-      graceful_shutdown: 'GracefulShutdown',
-      force_off: 'ForceOff',
-      warm_reset: 'GracefulRestart',
-      cold_boot: 'ForceRestart',
-    };
-    for (const [cardId, reset] of Object.entries(resetByCard)) {
+    // Actions: card id -> Redfish reset type (see lib/flow-actions.ts)
+    for (const [cardId, reset] of Object.entries(RESET_BY_CARD)) {
       this.homey.flow.getActionCard(cardId)
         .registerRunListener(async (args: { device: IloServerDevice }) => {
           await args.device.actionPower(reset);

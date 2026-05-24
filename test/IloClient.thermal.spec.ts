@@ -43,6 +43,56 @@ describe('IloClient.getThermal', () => {
     expect(r.inletTemp).to.equal(19);
   });
 
+  it('reports the max fan and ignores fans whose ReadingUnits is not "Percent"', async () => {
+    const t = new FakeTransport();
+    loggedIn(t);
+    t.on('GET', '/redfish/v1/Chassis/', { status: 200, headers: {}, body: { Members: [{ '@odata.id': '/redfish/v1/Chassis/1/' }] } });
+    t.on('GET', '/redfish/v1/Chassis/1/Thermal', {
+      status: 200,
+      headers: {},
+      body: {
+        Temperatures: [],
+        Fans: [
+          { Name: 'Fan 1', Reading: 15, ReadingUnits: 'Percent' },
+          { Name: 'Fan 2', Reading: 42, ReadingUnits: 'Percent' },
+          { Name: 'Fan 3', Reading: 33, ReadingUnits: 'Percent' },
+          // RPM fan must be ignored even though its raw Reading is huge.
+          { Name: 'Fan 4', Reading: 9000, ReadingUnits: 'RPM' },
+        ],
+      },
+    });
+    const c = new IloClient({ host: 'h', username: 'u', password: 'p', transport: t.fn });
+    await c.login();
+    const r = await c.getThermal();
+    expect(r.maxFanPercent).to.equal(42);
+  });
+
+  it('returns undefined maxFanPercent when every fan is non-Percent', async () => {
+    const t = new FakeTransport();
+    loggedIn(t);
+    t.on('GET', '/redfish/v1/Chassis/', { status: 200, headers: {}, body: { Members: [{ '@odata.id': '/redfish/v1/Chassis/1/' }] } });
+    t.on('GET', '/redfish/v1/Chassis/1/Thermal', {
+      status: 200,
+      headers: {},
+      body: { Temperatures: [], Fans: [{ Name: 'Fan 1', Reading: 4200, ReadingUnits: 'RPM' }] },
+    });
+    const c = new IloClient({ host: 'h', username: 'u', password: 'p', transport: t.fn });
+    await c.login();
+    const r = await c.getThermal();
+    expect(r.maxFanPercent).to.equal(undefined);
+  });
+
+  it('returns undefined readings (never throws) when the Thermal resource is 404', async () => {
+    const t = new FakeTransport();
+    loggedIn(t);
+    t.on('GET', '/redfish/v1/Chassis/', { status: 200, headers: {}, body: { Members: [{ '@odata.id': '/redfish/v1/Chassis/1/' }] } });
+    t.on('GET', '/redfish/v1/Chassis/1/Thermal', { status: 404, headers: {}, body: {} });
+    const c = new IloClient({ host: 'h', username: 'u', password: 'p', transport: t.fn });
+    await c.login();
+    const r = await c.getThermal();
+    expect(r).to.deep.equal({ inletTemp: undefined, cpuTemp: undefined, maxFanPercent: undefined });
+  });
+
   it('returns undefined fields when sensors are missing (never throws)', async () => {
     const t = new FakeTransport();
     loggedIn(t);

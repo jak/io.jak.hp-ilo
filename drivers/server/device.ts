@@ -1,5 +1,6 @@
 import Homey from 'homey';
 import { IloClient } from '../../lib/IloClient';
+import { healthTransition } from '../../lib/health';
 import type { HealthState, DeviceResetType } from '../../lib/redfish-types';
 
 interface ServerStore {
@@ -85,11 +86,12 @@ module.exports = class ServerDevice extends Homey.Device {
       if (t.maxFanPercent !== undefined) await this.setCapabilityValue('measure_fan_speed', t.maxFanPercent);
     }
     if (health.status === 'fulfilled' && health.value !== 'unknown') {
-      const previous = this.getCapabilityValue('ilo_health');
-      if (previous !== health.value) {
+      const previous = this.getCapabilityValue('ilo_health') as HealthState | null;
+      const { changed, critical } = healthTransition(previous, health.value);
+      if (changed) {
         const driver = this.driver as IloServerDriver;
         driver.triggerHealthChanged(this, health.value);
-        if (health.value === 'critical') driver.triggerHealthCritical(this);
+        if (critical) driver.triggerHealthCritical(this);
       }
       await this.setCapabilityValue('ilo_health', health.value);
     }
