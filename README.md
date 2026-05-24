@@ -139,6 +139,7 @@ differences (the *selection* of which value to show is covered above):
 ```bash
 npm install          # install dev dependencies
 npm test             # unit tests (Mocha + Chai) for the Redfish client
+npm run test:coverage # unit tests with a coverage report (c8)
 npm run build        # tsc → .homeybuild/
 npm run lint         # eslint
 homey app validate --level publish   # manifest validation
@@ -147,6 +148,23 @@ homey app run        # run live on a connected Homey (see below)
 
 `homey app run` requires a Homey on your network (and Homey developer login)
 plus a reachable iLO to pair against.
+
+## Publishing to the Homey App Store
+
+The app passes `homey app validate --level verified` (the strictest level). To
+publish (requires a Homey developer account):
+
+```bash
+homey login                       # authenticate the CLI
+homey app validate --level publish
+homey app publish                 # bumps version, prompts for a changelog, uploads a draft
+```
+
+`homey app publish` uploads a **draft** to the
+[Homey Developer Tools](https://tools.developer.homey.app/). From there, submit
+the draft for Athom's certification review; once approved it goes live in the
+store. The manifest already carries the store metadata (brand colour, category,
+author, support/source/bugs URLs) and artwork.
 
 ## Verification status
 

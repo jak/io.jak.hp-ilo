@@ -1,13 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
-  <rect x="48" y="32" width="160" height="192" rx="8" fill="none" stroke="#000000" stroke-width="8"/>
-  <rect x="64" y="56" width="128" height="32" rx="4" fill="none" stroke="#000000" stroke-width="6"/>
-  <rect x="64" y="104" width="128" height="32" rx="4" fill="none" stroke="#000000" stroke-width="6"/>
-  <rect x="64" y="152" width="128" height="32" rx="4" fill="none" stroke="#000000" stroke-width="6"/>
-  <circle cx="80" cy="72" r="5" fill="#000000"/>
-  <circle cx="80" cy="120" r="5" fill="#000000"/>
-  <circle cx="80" cy="168" r="5" fill="#000000"/>
-  <line x1="104" y1="72" x2="176" y2="72" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-  <line x1="104" y1="120" x2="176" y2="120" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
-  <line x1="104" y1="168" x2="176" y2="168" stroke="#000000" stroke-width="5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Top server unit -->
+  <rect x="104" y="150" width="304" height="92" rx="16" fill="#01A982"/>
+  <g stroke="#0A3A31" stroke-width="9" stroke-linecap="round">
+    <line x1="140" y1="178" x2="140" y2="214"/>
+    <line x1="162" y1="178" x2="162" y2="214"/>
+    <line x1="184" y1="178" x2="184" y2="214"/>
+  </g>
+  <!-- Bottom server unit -->
+  <rect x="104" y="270" width="304" height="92" rx="16" fill="#01A982"/>
+  <g stroke="#0A3A31" stroke-width="9" stroke-linecap="round">
+    <line x1="140" y1="290" x2="140" y2="318"/>
+    <line x1="162" y1="290" x2="162" y2="318"/>
+    <line x1="184" y1="290" x2="184" y2="318"/>
+  </g>
+  <!-- Status LEDs on the bottom unit -->
+  <g fill="#0A3A31">
+    <circle cx="140" cy="340" r="6"/>
+    <circle cx="162" cy="340" r="6"/>
+    <circle cx="184" cy="340" r="6"/>
+  </g>
+  <!-- Power / standby symbol -->
+  <g transform="translate(300 282) scale(2.6)" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M12 2v10"/>
+    <path d="M18.36 6.64a9 9 0 1 1 -12.73 0"/>
+  </g>
 </svg>
