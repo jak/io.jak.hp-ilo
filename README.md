@@ -1,5 +1,10 @@
 # HP iLO for Homey
 
+[![Homey App Store](https://img.shields.io/badge/Homey_App_Store-install-blue?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48L3N2Zz4=)](https://homey.app/a/io.jak.hp-ilo/)
+
+[![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://buymeacoffee.com/jakio)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/jak?label=sponsor)](https://github.com/sponsors/jak)
+
 Monitor and control HPE servers from Homey through their **iLO** (Integrated
 Lights-Out) management interface, using the modern **Redfish** REST API.
 
@@ -186,6 +191,15 @@ author, support/source/bugs URLs) and artwork.
   before relying on power control in automations. The `verified` validation
   level additionally requires a `support` contact, which is intentionally left
   unset.
+
+## Support
+
+If this app is useful to you, consider supporting development:
+
+[![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow)](https://buymeacoffee.com/jakio)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/jak?label=sponsor)](https://github.com/sponsors/jak)
+
+- 🐞 [Bug reports & feature requests](https://github.com/jak/io.jak.hp-ilo/issues)
 
 ## Design & plan
 

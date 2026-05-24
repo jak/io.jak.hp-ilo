@@ -33,5 +33,13 @@
         "username": "jak"
       }
     }
+  },
+  "tags": {
+    "en": ["iLO", "HPE", "ProLiant", "server", "Redfish", "BMC", "remote management", "monitoring"],
+    "nl": ["iLO", "HPE", "ProLiant", "server", "Redfish", "BMC", "beheer op afstand", "monitoring"],
+    "de": ["iLO", "HPE", "ProLiant", "Server", "Redfish", "BMC", "Fernverwaltung", "Überwachung"],
+    "fr": ["iLO", "HPE", "ProLiant", "serveur", "Redfish", "BMC", "gestion à distance", "surveillance"],
+    "es": ["iLO", "HPE", "ProLiant", "servidor", "Redfish", "BMC", "gestión remota", "monitorización"],
+    "it": ["iLO", "HPE", "ProLiant", "server", "Redfish", "BMC", "gestione remota", "monitoraggio"]
   }
 }
