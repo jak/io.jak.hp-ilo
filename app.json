@@ -39,6 +39,13 @@
   "bugs": {
     "url": "https://github.com/jak/io.jak.hp-ilo/issues"
   },
+  "contributing": {
+    "donate": {
+      "githubSponsors": {
+        "username": "jak"
+      }
+    }
+  },
   "flow": {
     "triggers": [
       {
