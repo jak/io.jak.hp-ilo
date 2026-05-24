@@ -116,13 +116,16 @@ plus a reachable iLO to pair against.
   injected HTTP transport and Redfish-shaped fixtures.
 - **Validated:** the Homey manifest passes `homey app validate` at `debug` and
   `publish` levels.
-- **Not yet exercised against real hardware:** the production HTTP transport
-  (global `fetch` + an `undici` agent for self-signed TLS) and the actual
-  Redfish JSON shapes returned by live iLO 5/6 firmware. The test fixtures are
-  modelled on HPE's documentation, not captured from a specific server. Before
-  relying on this in production, run `homey app run` and pair a real iLO to
-  confirm the live read/poll/power path. The `verified` validation level
-  additionally requires a `support` contact, which is intentionally left unset.
+- **Confirmed on real hardware:** pairing and the production HTTP transport
+  (global `fetch` + an `undici` agent for self-signed TLS) were verified via
+  `homey app run` against a live **iLO 5 (HPE ProLiant ML110 Gen10)** — session
+  login, the self-signed-cert path, and the system read all succeeded.
+- **Not yet independently confirmed on hardware:** the full periodic poll of the
+  Chassis `Power`/`Thermal` resources and the power-control actions (graceful
+  shutdown / force off / reset). These use the same unit-tested client paths,
+  but exercise them against your specific firmware; verify before relying on
+  power control in automations. The `verified` validation level additionally
+  requires a `support` contact, which is intentionally left unset.
 
 ## Design & plan
 

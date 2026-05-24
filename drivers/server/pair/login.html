@@ -1,76 +1,131 @@
-<script type="application/javascript">
-  function onHomeyReady(Homey) {
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 14px 0 4px;
+      font-size: 14px;
+      color: #555;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .checkbox-row label {
+      margin: 0;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #2196F3;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .status {
+      text-align: center;
+      margin-top: 10px;
+      color: #666;
+      font-size: 14px;
+    }
+    .error {
+      text-align: center;
+      margin-top: 8px;
+      color: #d32f2f;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <label for="host">Host / IP</label>
+  <input type="text" id="host" placeholder="192.168.1.50" />
+
+  <label for="username">Username</label>
+  <input type="text" id="username" placeholder="Administrator" />
+
+  <label for="password">Password</label>
+  <input type="password" id="password" />
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="selfsigned" checked />
+    <label for="selfsigned">Allow self-signed certificate</label>
+  </div>
+
+  <button id="connect-btn" type="button">Connect</button>
+  <div id="status" class="status"></div>
+  <div id="error-msg" class="error"></div>
+
+  <script>
+    // Pair views inject a global `Homey` and the script runs at top level —
+    // there is NO reliable onHomeyReady auto-call for pair views, so we do not
+    // wrap in onHomeyReady (mirrors the working io.jak.givenergy pair views).
     Homey.setTitle('Connect to iLO');
 
-    var btn = document.getElementById('connect');
-    var status = document.getElementById('status');
+    var btn = document.getElementById('connect-btn');
+    var statusEl = document.getElementById('status');
+    var errorEl = document.getElementById('error-msg');
 
-    function setStatus(text) {
-      status.textContent = text || '';
-    }
-
-    function onConnect() {
+    function submit() {
       var host = document.getElementById('host').value.trim();
       var username = document.getElementById('username').value.trim();
       var password = document.getElementById('password').value;
       var allowSelfSigned = document.getElementById('selfsigned').checked;
 
-      // Client-side validation so we never round-trip an obviously empty form.
+      errorEl.textContent = '';
+
       if (!host || !username) {
-        Homey.alert('Please enter both a host/IP and a username.', 'warning');
+        errorEl.textContent = 'Please enter both a host/IP and a username.';
         return;
       }
 
       btn.disabled = true;
-      setStatus('Connecting…');
+      statusEl.textContent = 'Connecting…';
 
-      // Homey.emit returns a Promise that resolves with the driver
-      // setHandler('manual_login') return value, and REJECTS if that
-      // handler throws. Use .then/.catch (not async/await) for older
-      // webview safety.
       Homey.emit('manual_login', {
         host: host,
         username: username,
         password: password,
         allowSelfSigned: allowSelfSigned,
-      })
-        .then(function () {
-          // Validation passed in the driver — advance to the device list.
-          Homey.showView('list_devices');
-        })
-        .catch(function (err) {
-          var message = err && err.message ? err.message : String(err);
-          Homey.alert(message, 'error');
-          setStatus('');
+      }, function (err) {
+        if (err) {
+          statusEl.textContent = '';
+          errorEl.textContent = (err && err.message) ? err.message : String(err);
           btn.disabled = false;
-        });
+          return;
+        }
+        Homey.showView('list_devices');
+      });
     }
 
-    btn.addEventListener('click', onConnect);
+    btn.addEventListener('click', submit);
 
-    // Call ready() only after the DOM is in place and the listener is
-    // attached, so the view is interactive the moment it becomes visible.
-    Homey.ready();
-  }
-</script>
-
-<div class="homey-form-group">
-  <label class="homey-form-label" for="host">Host / IP</label>
-  <input id="host" class="homey-form-input" type="text" placeholder="192.168.1.50" />
-</div>
-<div class="homey-form-group">
-  <label class="homey-form-label" for="username">Username</label>
-  <input id="username" class="homey-form-input" type="text" placeholder="Administrator" />
-</div>
-<div class="homey-form-group">
-  <label class="homey-form-label" for="password">Password</label>
-  <input id="password" class="homey-form-input" type="password" />
-</div>
-<div class="homey-form-group">
-  <label for="selfsigned">
-    <input id="selfsigned" type="checkbox" checked />
-    Allow self-signed certificate
-  </label>
-</div>
-<button id="connect" class="homey-button-primary-full">Connect</button>
-<p id="status" style="text-align: center; margin-top: 0.5em;"></p>
+    document.getElementById('password').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submit();
+    });
+  </script>
+</body>
+</html>
