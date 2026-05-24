@@ -1,5 +1,5 @@
 {
-  "title": { "en": "Restart (warm)" },
-  "titleFormatted": { "en": "Restart (warm) [[device]]" },
+  "title": { "en": "Restart (warm)", "nl": "Herstarten (warm)", "de": "Neustart (warm)", "fr": "Redémarrer (à chaud)", "es": "Reiniciar (en caliente)", "it": "Riavvia (a caldo)" },
+  "titleFormatted": { "en": "Restart (warm) [[device]]", "nl": "Herstarten (warm) [[device]]", "de": "Neustart (warm) [[device]]", "fr": "Redémarrer (à chaud) [[device]]", "es": "Reiniciar (en caliente) [[device]]", "it": "Riavvia (a caldo) [[device]]" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

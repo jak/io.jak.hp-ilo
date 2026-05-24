@@ -1,1 +1,18 @@
-{}
+{
+  "connecting": "Connecting…",
+  "unreachable": "iLO unreachable: ",
+  "pair": {
+    "title": "Connect to iLO",
+    "host": "Host / IP",
+    "username": "Username",
+    "password": "Password",
+    "allowSelfSigned": "Allow self-signed certificate",
+    "connect": "Connect",
+    "connecting": "Connecting…",
+    "missingFields": "Please enter both a host/IP and a username."
+  },
+  "error": {
+    "hostUserRequired": "Host and username are required",
+    "couldNotConnect": "Could not connect: "
+  }
+}

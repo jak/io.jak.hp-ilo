@@ -1,5 +1,5 @@
 {
-  "title": { "en": "Cold boot (force restart)" },
-  "titleFormatted": { "en": "Cold boot (force restart) [[device]]" },
+  "title": { "en": "Cold boot (force restart)", "nl": "Koude start (geforceerd herstarten)", "de": "Kaltstart (Neustart erzwingen)", "fr": "Démarrage à froid (redémarrage forcé)", "es": "Arranque en frío (reinicio forzado)", "it": "Avvio a freddo (riavvio forzato)" },
+  "titleFormatted": { "en": "Cold boot (force restart) [[device]]", "nl": "Koude start (geforceerd herstarten) [[device]]", "de": "Kaltstart (Neustart erzwingen) [[device]]", "fr": "Démarrage à froid (redémarrage forcé) [[device]]", "es": "Arranque en frío (reinicio forzado) [[device]]", "it": "Avvio a freddo (riavvio forzato) [[device]]" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

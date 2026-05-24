@@ -1,12 +1,12 @@
 {
   "type": "enum",
-  "title": { "en": "Health" },
+  "title": { "en": "Health", "nl": "Status", "de": "Zustand", "fr": "État", "es": "Estado", "it": "Stato" },
   "uiComponent": "sensor",
   "getable": true,
   "setable": false,
   "values": [
-    { "id": "ok", "title": { "en": "OK" } },
-    { "id": "warning", "title": { "en": "Warning" } },
-    { "id": "critical", "title": { "en": "Critical" } }
+    { "id": "ok", "title": { "en": "OK", "nl": "OK", "de": "OK", "fr": "OK", "es": "OK", "it": "OK" } },
+    { "id": "warning", "title": { "en": "Warning", "nl": "Waarschuwing", "de": "Warnung", "fr": "Avertissement", "es": "Advertencia", "it": "Avviso" } },
+    { "id": "critical", "title": { "en": "Critical", "nl": "Kritiek", "de": "Kritisch", "fr": "Critique", "es": "Crítico", "it": "Critico" } }
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "connecting": "Verbinde…",
+  "unreachable": "iLO nicht erreichbar: ",
+  "pair": {
+    "title": "Mit iLO verbinden",
+    "host": "Host / IP",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "allowSelfSigned": "Selbstsigniertes Zertifikat zulassen",
+    "connect": "Verbinden",
+    "connecting": "Verbinde…",
+    "missingFields": "Bitte geben Sie sowohl einen Host/IP als auch einen Benutzernamen ein."
+  },
+  "error": {
+    "hostUserRequired": "Host und Benutzername sind erforderlich",
+    "couldNotConnect": "Verbindung fehlgeschlagen: "
+  }
+}

@@ -61,18 +61,18 @@
   </style>
 </head>
 <body>
-  <label for="host">Host / IP</label>
+  <label for="host" id="host-label">Host / IP</label>
   <input type="text" id="host" placeholder="192.168.1.50" />
 
-  <label for="username">Username</label>
+  <label for="username" id="username-label">Username</label>
   <input type="text" id="username" placeholder="Administrator" />
 
-  <label for="password">Password</label>
+  <label for="password" id="password-label">Password</label>
   <input type="password" id="password" />
 
   <div class="checkbox-row">
     <input type="checkbox" id="selfsigned" checked />
-    <label for="selfsigned">Allow self-signed certificate</label>
+    <label for="selfsigned" id="selfsigned-label">Allow self-signed certificate</label>
   </div>
 
   <button id="connect-btn" type="button">Connect</button>
@@ -89,6 +89,17 @@
     var statusEl = document.getElementById('status');
     var errorEl = document.getElementById('error-msg');
 
+    // Defensive translation helper: return the localised string, or fall back
+    // to the supplied English default if localisation is unavailable/empty.
+    function t(key, fallback) {
+      try {
+        var v = Homey.__(key);
+        return (v && v !== key) ? v : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
     function submit() {
       var host = document.getElementById('host').value.trim();
       var username = document.getElementById('username').value.trim();
@@ -98,12 +109,12 @@
       errorEl.textContent = '';
 
       if (!host || !username) {
-        errorEl.textContent = 'Please enter both a host/IP and a username.';
+        errorEl.textContent = t('pair.missingFields', 'Please enter both a host/IP and a username.');
         return;
       }
 
       btn.disabled = true;
-      statusEl.textContent = 'Connecting…';
+      statusEl.textContent = t('pair.connecting', 'Connecting…');
 
       Homey.emit('manual_login', {
         host: host,
@@ -126,6 +137,17 @@
     document.getElementById('password').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') submit();
     });
+
+    // Localise static labels/placeholders/button AFTER the working setup above.
+    // English text stays in the HTML as the fallback (see guardrail): we only
+    // overwrite it when a translation is available, so the view still reads in
+    // English if localisation ever fails.
+    Homey.setTitle(t('pair.title', 'Connect to iLO'));
+    document.getElementById('host-label').textContent = t('pair.host', 'Host / IP');
+    document.getElementById('username-label').textContent = t('pair.username', 'Username');
+    document.getElementById('password-label').textContent = t('pair.password', 'Password');
+    document.getElementById('selfsigned-label').textContent = t('pair.allowSelfSigned', 'Allow self-signed certificate');
+    btn.textContent = t('pair.connect', 'Connect');
   </script>
 </body>
 </html>

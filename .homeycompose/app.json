@@ -6,7 +6,14 @@
   "runtime": "nodejs",
   "platforms": ["local"],
   "name": { "en": "HP iLO" },
-  "description": { "en": "Manage and monitor HPE servers via the iLO Redfish API" },
+  "description": {
+    "en": "Manage and monitor HPE servers via the iLO Redfish API",
+    "nl": "Beheer en bewaak HPE-servers via de iLO Redfish API",
+    "de": "HPE-Server über die iLO Redfish API verwalten und überwachen",
+    "fr": "Gérez et surveillez les serveurs HPE via l'API Redfish iLO",
+    "es": "Gestiona y supervisa servidores HPE a través de la API Redfish de iLO",
+    "it": "Gestisci e monitora i server HPE tramite l'API Redfish di iLO"
+  },
   "category": ["tools"],
   "brandColor": "#01A982",
   "permissions": [],

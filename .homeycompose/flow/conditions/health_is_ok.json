@@ -1,4 +1,4 @@
 {
-  "title": { "en": "Health !{{is|isn't}} OK" },
+  "title": { "en": "Health !{{is|isn't}} OK", "nl": "Status !{{is|is niet}} OK", "de": "Zustand !{{ist|ist nicht}} OK", "fr": "L'état !{{est|n'est pas}} OK", "es": "El estado !{{está|no está}} OK", "it": "Lo stato !{{è|non è}} OK" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

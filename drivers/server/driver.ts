@@ -45,7 +45,7 @@ module.exports = class ServerDriver extends Homey.Driver {
       // Diagnostic logging proves the handler is reached and which host it
       // tried; the password is intentionally never logged.
       this.log('manual_login received', { host: data.host, username: data.username, allowSelfSigned: data.allowSelfSigned });
-      if (!data.host || !data.username) throw new Error('Host and username are required');
+      if (!data.host || !data.username) throw new Error(this.homey.__('error.hostUserRequired'));
       const client = new IloClient({
         host: data.host,
         username: data.username,
@@ -58,7 +58,7 @@ module.exports = class ServerDriver extends Homey.Driver {
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         this.error('manual_login probe failed:', message);
-        throw new Error(`Could not connect: ${message}`);
+        throw new Error(`${this.homey.__('error.couldNotConnect')}${message}`);
       }
       creds = data;
       return true;

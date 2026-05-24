@@ -1,6 +1,6 @@
 {
   "type": "number",
-  "title": { "en": "Fan speed" },
+  "title": { "en": "Fan speed", "nl": "Ventilatorsnelheid", "de": "Lüfterdrehzahl", "fr": "Vitesse du ventilateur", "es": "Velocidad del ventilador", "it": "Velocità della ventola" },
   "uiComponent": "sensor",
   "getable": true,
   "setable": false,

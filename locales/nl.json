@@ -1,0 +1,18 @@
+{
+  "connecting": "Verbinden…",
+  "unreachable": "iLO onbereikbaar: ",
+  "pair": {
+    "title": "Verbinden met iLO",
+    "host": "Host / IP",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "allowSelfSigned": "Zelfondertekend certificaat toestaan",
+    "connect": "Verbinden",
+    "connecting": "Verbinden…",
+    "missingFields": "Voer zowel een host/IP als een gebruikersnaam in."
+  },
+  "error": {
+    "hostUserRequired": "Host en gebruikersnaam zijn vereist",
+    "couldNotConnect": "Kon geen verbinding maken: "
+  }
+}

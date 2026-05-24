@@ -1,0 +1,18 @@
+{
+  "connecting": "Connessione…",
+  "unreachable": "iLO non raggiungibile: ",
+  "pair": {
+    "title": "Connetti a iLO",
+    "host": "Host / IP",
+    "username": "Nome utente",
+    "password": "Password",
+    "allowSelfSigned": "Consenti certificati autofirmati",
+    "connect": "Connetti",
+    "connecting": "Connessione…",
+    "missingFields": "Inserisci sia un host/IP che un nome utente."
+  },
+  "error": {
+    "hostUserRequired": "Host e nome utente sono obbligatori",
+    "couldNotConnect": "Impossibile connettersi: "
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "name": { "en": "HPE Server (iLO)" },
+  "name": { "en": "HPE Server (iLO)", "nl": "HPE-server (iLO)", "de": "HPE-Server (iLO)", "fr": "Serveur HPE (iLO)", "es": "Servidor HPE (iLO)", "it": "Server HPE (iLO)" },
   "class": "other",
   "capabilities": [
     "onoff",
@@ -10,9 +10,9 @@
     "ilo_health"
   ],
   "capabilitiesOptions": {
-    "onoff": { "title": { "en": "Power" } },
-    "measure_temperature": { "title": { "en": "Inlet temperature" } },
-    "measure_temperature.cpu": { "title": { "en": "CPU temperature" } }
+    "onoff": { "title": { "en": "Power", "nl": "Aan/uit", "de": "Ein/Aus", "fr": "Alimentation", "es": "Alimentación", "it": "Alimentazione" } },
+    "measure_temperature": { "title": { "en": "Inlet temperature", "nl": "Inlaattemperatuur", "de": "Einlasstemperatur", "fr": "Température d'entrée", "es": "Temperatura de entrada", "it": "Temperatura di ingresso" } },
+    "measure_temperature.cpu": { "title": { "en": "CPU temperature", "nl": "CPU-temperatuur", "de": "CPU-Temperatur", "fr": "Température du processeur", "es": "Temperatura de la CPU", "it": "Temperatura della CPU" } }
   },
   "platforms": ["local"],
   "connectivity": ["lan"],
@@ -24,17 +24,17 @@
   "settings": [
     {
       "type": "group",
-      "label": { "en": "Connection" },
+      "label": { "en": "Connection", "nl": "Verbinding", "de": "Verbindung", "fr": "Connexion", "es": "Conexión", "it": "Connessione" },
       "children": [
-        { "id": "host", "type": "text", "label": { "en": "Host / IP" }, "value": "" },
-        { "id": "allow_self_signed", "type": "checkbox", "label": { "en": "Allow self-signed certificate" }, "value": true, "hint": { "en": "iLO ships with a self-signed certificate. Disable only if you installed a trusted certificate." } }
+        { "id": "host", "type": "text", "label": { "en": "Host / IP", "nl": "Host / IP", "de": "Host / IP", "fr": "Hôte / IP", "es": "Host / IP", "it": "Host / IP" }, "value": "" },
+        { "id": "allow_self_signed", "type": "checkbox", "label": { "en": "Allow self-signed certificate", "nl": "Zelfondertekend certificaat toestaan", "de": "Selbstsigniertes Zertifikat zulassen", "fr": "Autoriser les certificats auto-signés", "es": "Permitir certificados autofirmados", "it": "Consenti certificati autofirmati" }, "value": true, "hint": { "en": "iLO ships with a self-signed certificate. Disable only if you installed a trusted certificate.", "nl": "iLO wordt geleverd met een zelfondertekend certificaat. Schakel dit alleen uit als je een vertrouwd certificaat hebt geïnstalleerd.", "de": "iLO wird mit einem selbstsignierten Zertifikat ausgeliefert. Nur deaktivieren, wenn Sie ein vertrauenswürdiges Zertifikat installiert haben.", "fr": "iLO est livré avec un certificat auto-signé. Désactivez uniquement si vous avez installé un certificat de confiance.", "es": "iLO incluye un certificado autofirmado. Desactívalo solo si has instalado un certificado de confianza.", "it": "iLO include un certificato autofirmato. Disattiva solo se hai installato un certificato attendibile." } }
       ]
     },
     {
       "type": "group",
-      "label": { "en": "Polling" },
+      "label": { "en": "Polling", "nl": "Polling", "de": "Abfrage", "fr": "Interrogation", "es": "Sondeo", "it": "Polling" },
       "children": [
-        { "id": "poll_interval", "type": "number", "label": { "en": "Poll interval (seconds)" }, "value": 30, "min": 10, "max": 3600, "step": 5, "units": { "en": "s" } }
+        { "id": "poll_interval", "type": "number", "label": { "en": "Poll interval (seconds)", "nl": "Polling-interval (seconden)", "de": "Abfrageintervall (Sekunden)", "fr": "Intervalle d'interrogation (secondes)", "es": "Intervalo de sondeo (segundos)", "it": "Intervallo di polling (secondi)" }, "value": 30, "min": 10, "max": 3600, "step": 5, "units": { "en": "s" } }
       ]
     }
   ],

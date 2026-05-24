@@ -1,5 +1,5 @@
 {
-  "title": { "en": "Health status changed" },
+  "title": { "en": "Health status changed", "nl": "Statuswijziging", "de": "Zustand hat sich geändert", "fr": "L'état a changé", "es": "El estado ha cambiado", "it": "Lo stato è cambiato" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }],
-  "tokens": [{ "name": "health", "type": "string", "title": { "en": "Health" }, "example": "warning" }]
+  "tokens": [{ "name": "health", "type": "string", "title": { "en": "Health", "nl": "Status", "de": "Zustand", "fr": "État", "es": "Estado", "it": "Stato" }, "example": "warning" }]
 }

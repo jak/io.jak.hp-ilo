@@ -12,7 +12,12 @@
     "en": "HP iLO"
   },
   "description": {
-    "en": "Manage and monitor HPE servers via the iLO Redfish API"
+    "en": "Manage and monitor HPE servers via the iLO Redfish API",
+    "nl": "Beheer en bewaak HPE-servers via de iLO Redfish API",
+    "de": "HPE-Server über die iLO Redfish API verwalten und überwachen",
+    "fr": "Gérez et surveillez les serveurs HPE via l'API Redfish iLO",
+    "es": "Gestiona y supervisa servidores HPE a través de la API Redfish de iLO",
+    "it": "Gestisci e monitora i server HPE tramite l'API Redfish di iLO"
   },
   "category": [
     "tools"
@@ -38,7 +43,12 @@
     "triggers": [
       {
         "title": {
-          "en": "Health status changed"
+          "en": "Health status changed",
+          "nl": "Statuswijziging",
+          "de": "Zustand hat sich geändert",
+          "fr": "L'état a changé",
+          "es": "El estado ha cambiado",
+          "it": "Lo stato è cambiato"
         },
         "args": [
           {
@@ -52,7 +62,12 @@
             "name": "health",
             "type": "string",
             "title": {
-              "en": "Health"
+              "en": "Health",
+              "nl": "Status",
+              "de": "Zustand",
+              "fr": "État",
+              "es": "Estado",
+              "it": "Stato"
             },
             "example": "warning"
           }
@@ -61,7 +76,12 @@
       },
       {
         "title": {
-          "en": "Health became critical"
+          "en": "Health became critical",
+          "nl": "Status werd kritiek",
+          "de": "Zustand wurde kritisch",
+          "fr": "L'état est devenu critique",
+          "es": "El estado se volvió crítico",
+          "it": "Lo stato è diventato critico"
         },
         "args": [
           {
@@ -76,7 +96,12 @@
     "conditions": [
       {
         "title": {
-          "en": "Health !{{is|isn't}} OK"
+          "en": "Health !{{is|isn't}} OK",
+          "nl": "Status !{{is|is niet}} OK",
+          "de": "Zustand !{{ist|ist nicht}} OK",
+          "fr": "L'état !{{est|n'est pas}} OK",
+          "es": "El estado !{{está|no está}} OK",
+          "it": "Lo stato !{{è|non è}} OK"
         },
         "args": [
           {
@@ -89,7 +114,12 @@
       },
       {
         "title": {
-          "en": "Server !{{is|isn't}} powered on"
+          "en": "Server !{{is|isn't}} powered on",
+          "nl": "Server !{{is|is niet}} ingeschakeld",
+          "de": "Server !{{ist|ist nicht}} eingeschaltet",
+          "fr": "Le serveur !{{est|n'est pas}} allumé",
+          "es": "El servidor !{{está|no está}} encendido",
+          "it": "Il server !{{è|non è}} acceso"
         },
         "args": [
           {
@@ -104,10 +134,20 @@
     "actions": [
       {
         "title": {
-          "en": "Cold boot (force restart)"
+          "en": "Cold boot (force restart)",
+          "nl": "Koude start (geforceerd herstarten)",
+          "de": "Kaltstart (Neustart erzwingen)",
+          "fr": "Démarrage à froid (redémarrage forcé)",
+          "es": "Arranque en frío (reinicio forzado)",
+          "it": "Avvio a freddo (riavvio forzato)"
         },
         "titleFormatted": {
-          "en": "Cold boot (force restart) [[device]]"
+          "en": "Cold boot (force restart) [[device]]",
+          "nl": "Koude start (geforceerd herstarten) [[device]]",
+          "de": "Kaltstart (Neustart erzwingen) [[device]]",
+          "fr": "Démarrage à froid (redémarrage forcé) [[device]]",
+          "es": "Arranque en frío (reinicio forzado) [[device]]",
+          "it": "Avvio a freddo (riavvio forzato) [[device]]"
         },
         "args": [
           {
@@ -120,10 +160,20 @@
       },
       {
         "title": {
-          "en": "Force power off"
+          "en": "Force power off",
+          "nl": "Geforceerd uitschakelen",
+          "de": "Ausschalten erzwingen",
+          "fr": "Forcer l'extinction",
+          "es": "Forzar apagado",
+          "it": "Forza spegnimento"
         },
         "titleFormatted": {
-          "en": "Force power off [[device]]"
+          "en": "Force power off [[device]]",
+          "nl": "Geforceerd uitschakelen [[device]]",
+          "de": "Ausschalten erzwingen [[device]]",
+          "fr": "Forcer l'extinction [[device]]",
+          "es": "Forzar apagado [[device]]",
+          "it": "Forza spegnimento [[device]]"
         },
         "args": [
           {
@@ -136,10 +186,20 @@
       },
       {
         "title": {
-          "en": "Graceful shutdown"
+          "en": "Graceful shutdown",
+          "nl": "Normaal afsluiten",
+          "de": "Ordnungsgemäß herunterfahren",
+          "fr": "Arrêt normal",
+          "es": "Apagado normal",
+          "it": "Arresto normale"
         },
         "titleFormatted": {
-          "en": "Graceful shutdown [[device]]"
+          "en": "Graceful shutdown [[device]]",
+          "nl": "Normaal afsluiten [[device]]",
+          "de": "Ordnungsgemäß herunterfahren [[device]]",
+          "fr": "Arrêt normal [[device]]",
+          "es": "Apagado normal [[device]]",
+          "it": "Arresto normale [[device]]"
         },
         "args": [
           {
@@ -152,10 +212,20 @@
       },
       {
         "title": {
-          "en": "Turn on"
+          "en": "Turn on",
+          "nl": "Inschakelen",
+          "de": "Einschalten",
+          "fr": "Allumer",
+          "es": "Encender",
+          "it": "Accendi"
         },
         "titleFormatted": {
-          "en": "Turn on [[device]]"
+          "en": "Turn on [[device]]",
+          "nl": "Inschakelen [[device]]",
+          "de": "Einschalten [[device]]",
+          "fr": "Allumer [[device]]",
+          "es": "Encender [[device]]",
+          "it": "Accendi [[device]]"
         },
         "args": [
           {
@@ -168,10 +238,20 @@
       },
       {
         "title": {
-          "en": "Restart (warm)"
+          "en": "Restart (warm)",
+          "nl": "Herstarten (warm)",
+          "de": "Neustart (warm)",
+          "fr": "Redémarrer (à chaud)",
+          "es": "Reiniciar (en caliente)",
+          "it": "Riavvia (a caldo)"
         },
         "titleFormatted": {
-          "en": "Restart (warm) [[device]]"
+          "en": "Restart (warm) [[device]]",
+          "nl": "Herstarten (warm) [[device]]",
+          "de": "Neustart (warm) [[device]]",
+          "fr": "Redémarrer (à chaud) [[device]]",
+          "es": "Reiniciar (en caliente) [[device]]",
+          "it": "Riavvia (a caldo) [[device]]"
         },
         "args": [
           {
@@ -187,7 +267,12 @@
   "drivers": [
     {
       "name": {
-        "en": "HPE Server (iLO)"
+        "en": "HPE Server (iLO)",
+        "nl": "HPE-server (iLO)",
+        "de": "HPE-Server (iLO)",
+        "fr": "Serveur HPE (iLO)",
+        "es": "Servidor HPE (iLO)",
+        "it": "Server HPE (iLO)"
       },
       "class": "other",
       "capabilities": [
@@ -201,17 +286,32 @@
       "capabilitiesOptions": {
         "onoff": {
           "title": {
-            "en": "Power"
+            "en": "Power",
+            "nl": "Aan/uit",
+            "de": "Ein/Aus",
+            "fr": "Alimentation",
+            "es": "Alimentación",
+            "it": "Alimentazione"
           }
         },
         "measure_temperature": {
           "title": {
-            "en": "Inlet temperature"
+            "en": "Inlet temperature",
+            "nl": "Inlaattemperatuur",
+            "de": "Einlasstemperatur",
+            "fr": "Température d'entrée",
+            "es": "Temperatura de entrada",
+            "it": "Temperatura di ingresso"
           }
         },
         "measure_temperature.cpu": {
           "title": {
-            "en": "CPU temperature"
+            "en": "CPU temperature",
+            "nl": "CPU-temperatuur",
+            "de": "CPU-Temperatur",
+            "fr": "Température du processeur",
+            "es": "Temperatura de la CPU",
+            "it": "Temperatura della CPU"
           }
         }
       },
@@ -230,14 +330,24 @@
         {
           "type": "group",
           "label": {
-            "en": "Connection"
+            "en": "Connection",
+            "nl": "Verbinding",
+            "de": "Verbindung",
+            "fr": "Connexion",
+            "es": "Conexión",
+            "it": "Connessione"
           },
           "children": [
             {
               "id": "host",
               "type": "text",
               "label": {
-                "en": "Host / IP"
+                "en": "Host / IP",
+                "nl": "Host / IP",
+                "de": "Host / IP",
+                "fr": "Hôte / IP",
+                "es": "Host / IP",
+                "it": "Host / IP"
               },
               "value": ""
             },
@@ -245,11 +355,21 @@
               "id": "allow_self_signed",
               "type": "checkbox",
               "label": {
-                "en": "Allow self-signed certificate"
+                "en": "Allow self-signed certificate",
+                "nl": "Zelfondertekend certificaat toestaan",
+                "de": "Selbstsigniertes Zertifikat zulassen",
+                "fr": "Autoriser les certificats auto-signés",
+                "es": "Permitir certificados autofirmados",
+                "it": "Consenti certificati autofirmati"
               },
               "value": true,
               "hint": {
-                "en": "iLO ships with a self-signed certificate. Disable only if you installed a trusted certificate."
+                "en": "iLO ships with a self-signed certificate. Disable only if you installed a trusted certificate.",
+                "nl": "iLO wordt geleverd met een zelfondertekend certificaat. Schakel dit alleen uit als je een vertrouwd certificaat hebt geïnstalleerd.",
+                "de": "iLO wird mit einem selbstsignierten Zertifikat ausgeliefert. Nur deaktivieren, wenn Sie ein vertrauenswürdiges Zertifikat installiert haben.",
+                "fr": "iLO est livré avec un certificat auto-signé. Désactivez uniquement si vous avez installé un certificat de confiance.",
+                "es": "iLO incluye un certificado autofirmado. Desactívalo solo si has instalado un certificado de confianza.",
+                "it": "iLO include un certificato autofirmato. Disattiva solo se hai installato un certificato attendibile."
               }
             }
           ]
@@ -257,14 +377,24 @@
         {
           "type": "group",
           "label": {
-            "en": "Polling"
+            "en": "Polling",
+            "nl": "Polling",
+            "de": "Abfrage",
+            "fr": "Interrogation",
+            "es": "Sondeo",
+            "it": "Polling"
           },
           "children": [
             {
               "id": "poll_interval",
               "type": "number",
               "label": {
-                "en": "Poll interval (seconds)"
+                "en": "Poll interval (seconds)",
+                "nl": "Polling-interval (seconden)",
+                "de": "Abfrageintervall (Sekunden)",
+                "fr": "Intervalle d'interrogation (secondes)",
+                "es": "Intervalo de sondeo (segundos)",
+                "it": "Intervallo di polling (secondi)"
               },
               "value": 30,
               "min": 10,
@@ -300,7 +430,12 @@
     "ilo_health": {
       "type": "enum",
       "title": {
-        "en": "Health"
+        "en": "Health",
+        "nl": "Status",
+        "de": "Zustand",
+        "fr": "État",
+        "es": "Estado",
+        "it": "Stato"
       },
       "uiComponent": "sensor",
       "getable": true,
@@ -309,19 +444,34 @@
         {
           "id": "ok",
           "title": {
-            "en": "OK"
+            "en": "OK",
+            "nl": "OK",
+            "de": "OK",
+            "fr": "OK",
+            "es": "OK",
+            "it": "OK"
           }
         },
         {
           "id": "warning",
           "title": {
-            "en": "Warning"
+            "en": "Warning",
+            "nl": "Waarschuwing",
+            "de": "Warnung",
+            "fr": "Avertissement",
+            "es": "Advertencia",
+            "it": "Avviso"
           }
         },
         {
           "id": "critical",
           "title": {
-            "en": "Critical"
+            "en": "Critical",
+            "nl": "Kritiek",
+            "de": "Kritisch",
+            "fr": "Critique",
+            "es": "Crítico",
+            "it": "Critico"
           }
         }
       ]
@@ -329,7 +479,12 @@
     "measure_fan_speed": {
       "type": "number",
       "title": {
-        "en": "Fan speed"
+        "en": "Fan speed",
+        "nl": "Ventilatorsnelheid",
+        "de": "Lüfterdrehzahl",
+        "fr": "Vitesse du ventilateur",
+        "es": "Velocidad del ventilador",
+        "it": "Velocità della ventola"
       },
       "uiComponent": "sensor",
       "getable": true,

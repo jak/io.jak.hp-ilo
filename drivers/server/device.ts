@@ -31,7 +31,7 @@ module.exports = class ServerDevice extends Homey.Device {
       await this.client.setPower(value ? 'On' : 'GracefulShutdown');
     });
 
-    await this.setUnavailable('Connecting…').catch(() => undefined);
+    await this.setUnavailable(this.homey.__('connecting')).catch(() => undefined);
     await this.poll();
     this.startPolling();
   }
@@ -102,7 +102,7 @@ module.exports = class ServerDevice extends Homey.Device {
     if (power.status === 'rejected') {
       const { reason }: PromiseRejectedResult = power;
       const message = reason instanceof Error ? reason.message : String(reason);
-      await this.setUnavailable(`iLO unreachable: ${message}`).catch(() => undefined);
+      await this.setUnavailable(`${this.homey.__('unreachable')}${message}`).catch(() => undefined);
     } else {
       await this.setAvailable();
     }

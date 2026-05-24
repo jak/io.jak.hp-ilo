@@ -1,5 +1,5 @@
 {
-  "title": { "en": "Force power off" },
-  "titleFormatted": { "en": "Force power off [[device]]" },
+  "title": { "en": "Force power off", "nl": "Geforceerd uitschakelen", "de": "Ausschalten erzwingen", "fr": "Forcer l'extinction", "es": "Forzar apagado", "it": "Forza spegnimento" },
+  "titleFormatted": { "en": "Force power off [[device]]", "nl": "Geforceerd uitschakelen [[device]]", "de": "Ausschalten erzwingen [[device]]", "fr": "Forcer l'extinction [[device]]", "es": "Forzar apagado [[device]]", "it": "Forza spegnimento [[device]]" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

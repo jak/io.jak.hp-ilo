@@ -1,4 +1,4 @@
 {
-  "title": { "en": "Health became critical" },
+  "title": { "en": "Health became critical", "nl": "Status werd kritiek", "de": "Zustand wurde kritisch", "fr": "L'état est devenu critique", "es": "El estado se volvió crítico", "it": "Lo stato è diventato critico" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

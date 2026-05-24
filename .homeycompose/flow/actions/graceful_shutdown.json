@@ -1,5 +1,5 @@
 {
-  "title": { "en": "Graceful shutdown" },
-  "titleFormatted": { "en": "Graceful shutdown [[device]]" },
+  "title": { "en": "Graceful shutdown", "nl": "Normaal afsluiten", "de": "Ordnungsgemäß herunterfahren", "fr": "Arrêt normal", "es": "Apagado normal", "it": "Arresto normale" },
+  "titleFormatted": { "en": "Graceful shutdown [[device]]", "nl": "Normaal afsluiten [[device]]", "de": "Ordnungsgemäß herunterfahren [[device]]", "fr": "Arrêt normal [[device]]", "es": "Apagado normal [[device]]", "it": "Arresto normale [[device]]" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }
