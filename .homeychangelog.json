@@ -7,5 +7,8 @@
   },
   "1.1.0": {
     "en": "The power tile is now read only to prevent accidental shutdowns of a server"
+  },
+  "1.1.1": {
+    "en": "Updated app and driver images, improved flow descriptions"
   }
 }
