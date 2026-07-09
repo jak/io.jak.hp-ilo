@@ -203,20 +203,28 @@
     "actions": [
       {
         "title": {
-          "en": "Cold boot (force restart)",
-          "nl": "Koude start (geforceerd herstarten)",
-          "de": "Kaltstart (Neustart erzwingen)",
-          "fr": "Démarrage à froid (redémarrage forcé)",
-          "es": "Arranque en frío (reinicio forzado)",
-          "it": "Avvio a freddo (riavvio forzato)"
+          "en": "Force restart",
+          "nl": "Geforceerd herstarten",
+          "de": "Neustart erzwingen",
+          "fr": "Forcer le redémarrage",
+          "es": "Forzar reinicio",
+          "it": "Forza riavvio"
         },
         "titleFormatted": {
-          "en": "Cold boot (force restart) [[device]]",
-          "nl": "Koude start (geforceerd herstarten) [[device]]",
-          "de": "Kaltstart (Neustart erzwingen) [[device]]",
-          "fr": "Démarrage à froid (redémarrage forcé) [[device]]",
-          "es": "Arranque en frío (reinicio forzado) [[device]]",
-          "it": "Avvio a freddo (riavvio forzato) [[device]]"
+          "en": "Force restart [[device]]",
+          "nl": "Geforceerd herstarten [[device]]",
+          "de": "Neustart erzwingen [[device]]",
+          "fr": "Forcer le redémarrage [[device]]",
+          "es": "Forzar reinicio [[device]]",
+          "it": "Forza riavvio [[device]]"
+        },
+        "hint": {
+          "en": "Restarts the server immediately without shutting down the operating system. Unsaved data may be lost.",
+          "nl": "Herstart de server direct zonder het besturingssysteem af te sluiten. Niet-opgeslagen gegevens kunnen verloren gaan.",
+          "de": "Startet den Server sofort neu, ohne das Betriebssystem herunterzufahren. Nicht gespeicherte Daten können verloren gehen.",
+          "fr": "Redémarre immédiatement le serveur sans arrêter le système d'exploitation. Les données non enregistrées peuvent être perdues.",
+          "es": "Reinicia el servidor de inmediato sin apagar el sistema operativo. Se pueden perder los datos no guardados.",
+          "it": "Riavvia immediatamente il server senza arrestare il sistema operativo. I dati non salvati potrebbero andare persi."
         },
         "args": [
           {
@@ -244,6 +252,14 @@
           "es": "Forzar apagado [[device]]",
           "it": "Forza spegnimento [[device]]"
         },
+        "hint": {
+          "en": "Cuts power immediately without shutting down the operating system, like holding the power button. Unsaved data may be lost.",
+          "nl": "Schakelt de stroom direct uit zonder het besturingssysteem af te sluiten, zoals het ingedrukt houden van de aan/uit-knop. Niet-opgeslagen gegevens kunnen verloren gaan.",
+          "de": "Trennt sofort die Stromversorgung, ohne das Betriebssystem herunterzufahren – wie langes Drücken des Netzschalters. Nicht gespeicherte Daten können verloren gehen.",
+          "fr": "Coupe immédiatement l'alimentation sans arrêter le système d'exploitation, comme un appui long sur le bouton d'alimentation. Les données non enregistrées peuvent être perdues.",
+          "es": "Corta la alimentación de inmediato sin apagar el sistema operativo, como mantener pulsado el botón de encendido. Se pueden perder los datos no guardados.",
+          "it": "Toglie immediatamente l'alimentazione senza arrestare il sistema operativo, come tenere premuto il pulsante di accensione. I dati non salvati potrebbero andare persi."
+        },
         "args": [
           {
             "name": "device",
@@ -255,20 +271,28 @@
       },
       {
         "title": {
-          "en": "Graceful shutdown",
-          "nl": "Normaal afsluiten",
-          "de": "Ordnungsgemäß herunterfahren",
-          "fr": "Arrêt normal",
-          "es": "Apagado normal",
-          "it": "Arresto normale"
+          "en": "Shut down",
+          "nl": "Afsluiten",
+          "de": "Herunterfahren",
+          "fr": "Éteindre",
+          "es": "Apagar",
+          "it": "Spegni"
         },
         "titleFormatted": {
-          "en": "Graceful shutdown [[device]]",
-          "nl": "Normaal afsluiten [[device]]",
-          "de": "Ordnungsgemäß herunterfahren [[device]]",
-          "fr": "Arrêt normal [[device]]",
-          "es": "Apagado normal [[device]]",
-          "it": "Arresto normale [[device]]"
+          "en": "Shut down [[device]]",
+          "nl": "Afsluiten [[device]]",
+          "de": "Herunterfahren [[device]]",
+          "fr": "Éteindre [[device]]",
+          "es": "Apagar [[device]]",
+          "it": "Spegni [[device]]"
+        },
+        "hint": {
+          "en": "Asks the operating system to shut down safely, then powers off.",
+          "nl": "Vraagt het besturingssysteem om veilig af te sluiten en schakelt daarna uit.",
+          "de": "Fordert das Betriebssystem auf, sicher herunterzufahren, und schaltet dann aus.",
+          "fr": "Demande au système d'exploitation de s'arrêter en toute sécurité, puis coupe l'alimentation.",
+          "es": "Pide al sistema operativo que se apague de forma segura y después corta la alimentación.",
+          "it": "Chiede al sistema operativo di arrestarsi in modo sicuro, quindi spegne il server."
         },
         "args": [
           {
@@ -307,20 +331,28 @@
       },
       {
         "title": {
-          "en": "Restart (warm)",
-          "nl": "Herstarten (warm)",
-          "de": "Neustart (warm)",
-          "fr": "Redémarrer (à chaud)",
-          "es": "Reiniciar (en caliente)",
-          "it": "Riavvia (a caldo)"
+          "en": "Restart",
+          "nl": "Herstarten",
+          "de": "Neustart",
+          "fr": "Redémarrer",
+          "es": "Reiniciar",
+          "it": "Riavvia"
         },
         "titleFormatted": {
-          "en": "Restart (warm) [[device]]",
-          "nl": "Herstarten (warm) [[device]]",
-          "de": "Neustart (warm) [[device]]",
-          "fr": "Redémarrer (à chaud) [[device]]",
-          "es": "Reiniciar (en caliente) [[device]]",
-          "it": "Riavvia (a caldo) [[device]]"
+          "en": "Restart [[device]]",
+          "nl": "Herstarten [[device]]",
+          "de": "Neustart [[device]]",
+          "fr": "Redémarrer [[device]]",
+          "es": "Reiniciar [[device]]",
+          "it": "Riavvia [[device]]"
+        },
+        "hint": {
+          "en": "Asks the operating system to shut down safely, then starts the server again.",
+          "nl": "Vraagt het besturingssysteem om veilig af te sluiten en start de server daarna opnieuw.",
+          "de": "Fordert das Betriebssystem auf, sicher herunterzufahren, und startet den Server anschließend neu.",
+          "fr": "Demande au système d'exploitation de s'arrêter en toute sécurité, puis redémarre le serveur.",
+          "es": "Pide al sistema operativo que se apague de forma segura y después reinicia el servidor.",
+          "it": "Chiede al sistema operativo di arrestarsi in modo sicuro, quindi riavvia il server."
         },
         "args": [
           {

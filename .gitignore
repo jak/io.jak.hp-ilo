@@ -3,3 +3,7 @@
 /.homeybuild/
 /coverage/
 /.nyc_output/
+
+# AI image generation scratch output
+generated_imgs/
+docs/ilo-reference.png

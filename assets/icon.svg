@@ -1,27 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- Top server unit -->
-  <rect x="104" y="150" width="304" height="92" rx="16" fill="#01A982"/>
-  <g stroke="#0A3A31" stroke-width="9" stroke-linecap="round">
-    <line x1="140" y1="178" x2="140" y2="214"/>
-    <line x1="162" y1="178" x2="162" y2="214"/>
-    <line x1="184" y1="178" x2="184" y2="214"/>
+  <!--
+    App icon: HPE iLO brand mark, redrawn as vector from docs/ilo-reference.png.
+    An outer hexagon containing an inset isometric cube: the cube's top
+    corners connect to the hexagon's upper vertices, and a filled puck at
+    the cube's centre joins its three near edges (the "Y").
+    Single colour in HPE green (#01A982).
+  -->
+  <g stroke="#01A982" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Outer hexagon (point-up, radius 215 around 256,260) -->
+    <polygon points="256,45 442,152.5 442,367.5 256,475 70,367.5 70,152.5"/>
+
+    <!-- Inner cube silhouette (point-up hexagon, radius 100 around 256,249) -->
+    <polygon points="256,149 342.6,199 342.6,299 256,349 169.4,299 169.4,199"/>
+
+    <!-- Notch edges joining the outer hexagon to the cube's corners -->
+    <line x1="70" y1="152.5" x2="169.4" y2="199"/>
+    <line x1="442" y1="152.5" x2="342.6" y2="199"/>
+    <line x1="256" y1="349" x2="256" y2="475"/>
+
+    <!-- The cube's "Y": centre to top, lower-left and lower-right corners -->
+    <line x1="256" y1="249" x2="256" y2="149"/>
+    <line x1="256" y1="249" x2="169.4" y2="299"/>
+    <line x1="256" y1="249" x2="342.6" y2="299"/>
   </g>
-  <!-- Bottom server unit -->
-  <rect x="104" y="270" width="304" height="92" rx="16" fill="#01A982"/>
-  <g stroke="#0A3A31" stroke-width="9" stroke-linecap="round">
-    <line x1="140" y1="290" x2="140" y2="318"/>
-    <line x1="162" y1="290" x2="162" y2="318"/>
-    <line x1="184" y1="290" x2="184" y2="318"/>
-  </g>
-  <!-- Status LEDs on the bottom unit -->
-  <g fill="#0A3A31">
-    <circle cx="140" cy="340" r="6"/>
-    <circle cx="162" cy="340" r="6"/>
-    <circle cx="184" cy="340" r="6"/>
-  </g>
-  <!-- Power / standby symbol -->
-  <g transform="translate(300 282) scale(2.6)" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M12 2v10"/>
-    <path d="M18.36 6.64a9 9 0 1 1 -12.73 0"/>
-  </g>
+
+  <!-- Central puck -->
+  <circle cx="256" cy="249" r="27" fill="#01A982"/>
 </svg>
