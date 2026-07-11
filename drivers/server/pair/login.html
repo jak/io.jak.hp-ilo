@@ -58,6 +58,19 @@
       color: #d32f2f;
       font-size: 14px;
     }
+    .cert-warning {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid #f0c36d;
+      border-radius: 6px;
+      background: #fdf7e7;
+      font-size: 14px;
+      color: #6b5416;
+    }
+    .cert-warning button {
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
@@ -71,13 +84,18 @@
   <input type="password" id="password" />
 
   <div class="checkbox-row">
-    <input type="checkbox" id="selfsigned" checked />
+    <input type="checkbox" id="selfsigned" />
     <label for="selfsigned" id="selfsigned-label">Allow self-signed certificate</label>
   </div>
 
   <button id="connect-btn" type="button">Connect</button>
   <div id="status" class="status"></div>
   <div id="error-msg" class="error"></div>
+
+  <div id="cert-warning" class="cert-warning">
+    <span id="cert-warning-text">This iLO uses a self-signed certificate, so the connection could not be verified. This is how iLO ships from the factory.</span>
+    <button id="cert-retry-btn" type="button">Allow self-signed certificate and retry</button>
+  </div>
 
   <script>
     // Pair views inject a global `Homey` and the script runs at top level —
@@ -88,6 +106,8 @@
     var btn = document.getElementById('connect-btn');
     var statusEl = document.getElementById('status');
     var errorEl = document.getElementById('error-msg');
+    var certWarningEl = document.getElementById('cert-warning');
+    var certRetryBtn = document.getElementById('cert-retry-btn');
 
     // Defensive translation helper: return the localised string, or fall back
     // to the supplied English default if localisation is unavailable/empty.
@@ -107,6 +127,7 @@
       var allowSelfSigned = document.getElementById('selfsigned').checked;
 
       errorEl.textContent = '';
+      certWarningEl.style.display = 'none';
 
       if (!host || !username) {
         errorEl.textContent = t('pair.missingFields', 'Please enter both a host/IP and a username.');
@@ -121,10 +142,19 @@
         username: username,
         password: password,
         allowSelfSigned: allowSelfSigned,
-      }, function (err) {
+      }, function (err, result) {
         if (err) {
           statusEl.textContent = '';
           errorEl.textContent = (err && err.message) ? err.message : String(err);
+          btn.disabled = false;
+          return;
+        }
+        // The driver reports an unverifiable (self-signed) certificate as a
+        // structured result so we can offer a one-tap recovery instead of a
+        // dead-end error message.
+        if (result && result.certError) {
+          statusEl.textContent = '';
+          certWarningEl.style.display = 'block';
           btn.disabled = false;
           return;
         }
@@ -133,6 +163,12 @@
     }
 
     btn.addEventListener('click', submit);
+
+    certRetryBtn.addEventListener('click', function () {
+      document.getElementById('selfsigned').checked = true;
+      certWarningEl.style.display = 'none';
+      submit();
+    });
 
     document.getElementById('password').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') submit();
@@ -148,6 +184,8 @@
     document.getElementById('password-label').textContent = t('pair.password', 'Password');
     document.getElementById('selfsigned-label').textContent = t('pair.allowSelfSigned', 'Allow self-signed certificate');
     btn.textContent = t('pair.connect', 'Connect');
+    document.getElementById('cert-warning-text').textContent = t('pair.selfSignedDetected', 'This iLO uses a self-signed certificate, so the connection could not be verified. This is how iLO ships from the factory.');
+    certRetryBtn.textContent = t('pair.selfSignedRetry', 'Allow self-signed certificate and retry');
   </script>
 </body>
 </html>

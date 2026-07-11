@@ -1,6 +1,5 @@
 {
   "title": { "en": "Force restart", "nl": "Geforceerd herstarten", "de": "Neustart erzwingen", "fr": "Forcer le redémarrage", "es": "Forzar reinicio", "it": "Forza riavvio" },
-  "titleFormatted": { "en": "Force restart [[device]]", "nl": "Geforceerd herstarten [[device]]", "de": "Neustart erzwingen [[device]]", "fr": "Forcer le redémarrage [[device]]", "es": "Forzar reinicio [[device]]", "it": "Forza riavvio [[device]]" },
   "hint": { "en": "Restarts the server immediately without shutting down the operating system. Unsaved data may be lost.", "nl": "Herstart de server direct zonder het besturingssysteem af te sluiten. Niet-opgeslagen gegevens kunnen verloren gaan.", "de": "Startet den Server sofort neu, ohne das Betriebssystem herunterzufahren. Nicht gespeicherte Daten können verloren gehen.", "fr": "Redémarre immédiatement le serveur sans arrêter le système d'exploitation. Les données non enregistrées peuvent être perdues.", "es": "Reinicia el servidor de inmediato sin apagar el sistema operativo. Se pueden perder los datos no guardados.", "it": "Riavvia immediatamente il server senza arrestare il sistema operativo. I dati non salvati potrebbero andare persi." },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

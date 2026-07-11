@@ -9,7 +9,9 @@
     "allowSelfSigned": "Autoriser les certificats auto-signés",
     "connect": "Se connecter",
     "connecting": "Connexion…",
-    "missingFields": "Veuillez saisir un hôte/IP et un nom d'utilisateur."
+    "missingFields": "Veuillez saisir un hôte/IP et un nom d'utilisateur.",
+    "selfSignedDetected": "Cette iLO utilise un certificat auto-signé, la connexion n'a donc pas pu être vérifiée. C'est ainsi qu'iLO est livré d'usine.",
+    "selfSignedRetry": "Autoriser le certificat auto-signé et réessayer"
   },
   "error": {
     "hostUserRequired": "L'hôte et le nom d'utilisateur sont requis",

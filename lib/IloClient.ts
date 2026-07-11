@@ -35,6 +35,29 @@ export function isTimeoutAbort(err: unknown): boolean {
   return err instanceof Error && (err.name === 'AbortError' || err.name === 'TimeoutError');
 }
 
+/** Node TLS error codes that mean "the certificate could not be verified" —
+ * i.e. the class of failure that enabling `allowSelfSigned` would bypass. */
+const CERT_ERROR_CODES = new Set([
+  'DEPTH_ZERO_SELF_SIGNED_CERT',
+  'SELF_SIGNED_CERT_IN_CHAIN',
+  'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
+  'UNABLE_TO_GET_ISSUER_CERT',
+  'UNABLE_TO_GET_ISSUER_CERT_LOCALLY',
+  'CERT_HAS_EXPIRED',
+  'ERR_TLS_CERT_ALTNAME_INVALID',
+]);
+
+/** True when an error (or anything in its `cause` chain — undici's fetch wraps
+ * the TLS error in a generic "fetch failed" TypeError) is a certificate
+ * verification failure. */
+export function isCertificateError(err: unknown): boolean {
+  for (let e: any = err; e; e = e.cause) {
+    if (e.certError === true) return true;
+    if (typeof e.code === 'string' && CERT_ERROR_CODES.has(e.code)) return true;
+  }
+  return false;
+}
+
 function defaultTransport(allowSelfSigned: boolean, timeoutMs: number): HttpRequestFn {
   const dispatcher = allowSelfSigned
     ? new Agent({ connect: { rejectUnauthorized: false } })
@@ -56,6 +79,14 @@ function defaultTransport(allowSelfSigned: boolean, timeoutMs: number): HttpRequ
     } catch (err) {
       if (isTimeoutAbort(err)) {
         throw new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s`);
+      }
+      if (isCertificateError(err)) {
+        // undici's fetch surfaces this as a bare "fetch failed" — replace it
+        // with a message that tells the user what to do about it.
+        const e: any = new Error('The server\'s TLS certificate could not be verified (it is likely self-signed). Enable "Allow self-signed certificate" to connect anyway.');
+        e.certError = true;
+        e.cause = err;
+        throw e;
       }
       throw err;
     }
@@ -95,7 +126,8 @@ export class IloClient {
     this.host = opts.host;
     this.username = opts.username;
     this.password = opts.password;
-    this.transport = opts.transport ?? defaultTransport(opts.allowSelfSigned ?? true, opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+    // Secure by default: TLS verification stays on unless explicitly relaxed.
+    this.transport = opts.transport ?? defaultTransport(opts.allowSelfSigned ?? false, opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
     this.retryDelayMs = opts.retryDelayMs ?? 500;
   }
 

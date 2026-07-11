@@ -1,6 +1,5 @@
 {
   "title": { "en": "Shut down", "nl": "Afsluiten", "de": "Herunterfahren", "fr": "Éteindre", "es": "Apagar", "it": "Spegni" },
-  "titleFormatted": { "en": "Shut down [[device]]", "nl": "Afsluiten [[device]]", "de": "Herunterfahren [[device]]", "fr": "Éteindre [[device]]", "es": "Apagar [[device]]", "it": "Spegni [[device]]" },
   "hint": { "en": "Asks the operating system to shut down safely, then powers off.", "nl": "Vraagt het besturingssysteem om veilig af te sluiten en schakelt daarna uit.", "de": "Fordert das Betriebssystem auf, sicher herunterzufahren, und schaltet dann aus.", "fr": "Demande au système d'exploitation de s'arrêter en toute sécurité, puis coupe l'alimentation.", "es": "Pide al sistema operativo que se apague de forma segura y después corta la alimentación.", "it": "Chiede al sistema operativo di arrestarsi in modo sicuro, quindi spegne il server." },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

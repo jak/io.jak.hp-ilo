@@ -1,5 +1,4 @@
 {
   "title": { "en": "Turn on", "nl": "Inschakelen", "de": "Einschalten", "fr": "Allumer", "es": "Encender", "it": "Accendi" },
-  "titleFormatted": { "en": "Turn on [[device]]", "nl": "Inschakelen [[device]]", "de": "Einschalten [[device]]", "fr": "Allumer [[device]]", "es": "Encender [[device]]", "it": "Accendi [[device]]" },
   "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
 }

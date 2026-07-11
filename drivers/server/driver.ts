@@ -1,5 +1,5 @@
 import Homey from 'homey';
-import { IloClient } from '../../lib/IloClient';
+import { IloClient, isCertificateError } from '../../lib/IloClient';
 import RESET_BY_CARD from '../../lib/flow-actions';
 import type { HealthState, DeviceResetType } from '../../lib/redfish-types';
 
@@ -58,6 +58,10 @@ module.exports = class ServerDriver extends Homey.Driver {
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         this.error('manual_login probe failed:', message);
+        // Certificate verification failures get a structured response instead
+        // of a thrown error, so the pair view can offer a one-tap
+        // "allow self-signed and retry" instead of a dead-end message.
+        if (isCertificateError(err)) return { certError: true };
         throw new Error(`${this.homey.__('error.couldNotConnect')}${message}`);
       }
       creds = data;

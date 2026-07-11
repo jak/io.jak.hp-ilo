@@ -9,7 +9,9 @@
     "allowSelfSigned": "Consenti certificati autofirmati",
     "connect": "Connetti",
     "connecting": "Connessione…",
-    "missingFields": "Inserisci sia un host/IP che un nome utente."
+    "missingFields": "Inserisci sia un host/IP che un nome utente.",
+    "selfSignedDetected": "Questa iLO usa un certificato autofirmato, quindi non è stato possibile verificare la connessione. È così che iLO esce di fabbrica.",
+    "selfSignedRetry": "Consenti il certificato autofirmato e riprova"
   },
   "error": {
     "hostUserRequired": "Host e nome utente sono obbligatori",

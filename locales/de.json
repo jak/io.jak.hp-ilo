@@ -9,7 +9,9 @@
     "allowSelfSigned": "Selbstsigniertes Zertifikat zulassen",
     "connect": "Verbinden",
     "connecting": "Verbinde…",
-    "missingFields": "Bitte geben Sie sowohl einen Host/IP als auch einen Benutzernamen ein."
+    "missingFields": "Bitte geben Sie sowohl einen Host/IP als auch einen Benutzernamen ein.",
+    "selfSignedDetected": "Diese iLO verwendet ein selbstsigniertes Zertifikat, daher konnte die Verbindung nicht verifiziert werden. So wird iLO ab Werk ausgeliefert.",
+    "selfSignedRetry": "Selbstsigniertes Zertifikat zulassen und erneut versuchen"
   },
   "error": {
     "hostUserRequired": "Host und Benutzername sind erforderlich",

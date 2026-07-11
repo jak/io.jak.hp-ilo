@@ -9,7 +9,9 @@
     "allowSelfSigned": "Zelfondertekend certificaat toestaan",
     "connect": "Verbinden",
     "connecting": "Verbinden…",
-    "missingFields": "Voer zowel een host/IP als een gebruikersnaam in."
+    "missingFields": "Voer zowel een host/IP als een gebruikersnaam in.",
+    "selfSignedDetected": "Deze iLO gebruikt een zelfondertekend certificaat, waardoor de verbinding niet kon worden geverifieerd. Zo wordt iLO af fabriek geleverd.",
+    "selfSignedRetry": "Zelfondertekend certificaat toestaan en opnieuw proberen"
   },
   "error": {
     "hostUserRequired": "Host en gebruikersnaam zijn vereist",

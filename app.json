@@ -210,14 +210,6 @@
           "es": "Forzar reinicio",
           "it": "Forza riavvio"
         },
-        "titleFormatted": {
-          "en": "Force restart [[device]]",
-          "nl": "Geforceerd herstarten [[device]]",
-          "de": "Neustart erzwingen [[device]]",
-          "fr": "Forcer le redémarrage [[device]]",
-          "es": "Forzar reinicio [[device]]",
-          "it": "Forza riavvio [[device]]"
-        },
         "hint": {
           "en": "Restarts the server immediately without shutting down the operating system. Unsaved data may be lost.",
           "nl": "Herstart de server direct zonder het besturingssysteem af te sluiten. Niet-opgeslagen gegevens kunnen verloren gaan.",
@@ -243,14 +235,6 @@
           "fr": "Forcer l'extinction",
           "es": "Forzar apagado",
           "it": "Forza spegnimento"
-        },
-        "titleFormatted": {
-          "en": "Force power off [[device]]",
-          "nl": "Geforceerd uitschakelen [[device]]",
-          "de": "Ausschalten erzwingen [[device]]",
-          "fr": "Forcer l'extinction [[device]]",
-          "es": "Forzar apagado [[device]]",
-          "it": "Forza spegnimento [[device]]"
         },
         "hint": {
           "en": "Cuts power immediately without shutting down the operating system, like holding the power button. Unsaved data may be lost.",
@@ -278,14 +262,6 @@
           "es": "Apagar",
           "it": "Spegni"
         },
-        "titleFormatted": {
-          "en": "Shut down [[device]]",
-          "nl": "Afsluiten [[device]]",
-          "de": "Herunterfahren [[device]]",
-          "fr": "Éteindre [[device]]",
-          "es": "Apagar [[device]]",
-          "it": "Spegni [[device]]"
-        },
         "hint": {
           "en": "Asks the operating system to shut down safely, then powers off.",
           "nl": "Vraagt het besturingssysteem om veilig af te sluiten en schakelt daarna uit.",
@@ -312,14 +288,6 @@
           "es": "Encender",
           "it": "Accendi"
         },
-        "titleFormatted": {
-          "en": "Turn on [[device]]",
-          "nl": "Inschakelen [[device]]",
-          "de": "Einschalten [[device]]",
-          "fr": "Allumer [[device]]",
-          "es": "Encender [[device]]",
-          "it": "Accendi [[device]]"
-        },
         "args": [
           {
             "name": "device",
@@ -337,14 +305,6 @@
           "fr": "Redémarrer",
           "es": "Reiniciar",
           "it": "Riavvia"
-        },
-        "titleFormatted": {
-          "en": "Restart [[device]]",
-          "nl": "Herstarten [[device]]",
-          "de": "Neustart [[device]]",
-          "fr": "Redémarrer [[device]]",
-          "es": "Reiniciar [[device]]",
-          "it": "Riavvia [[device]]"
         },
         "hint": {
           "en": "Asks the operating system to shut down safely, then starts the server again.",
@@ -465,14 +425,14 @@
                 "es": "Permitir certificados autofirmados",
                 "it": "Consenti certificati autofirmati"
               },
-              "value": true,
+              "value": false,
               "hint": {
-                "en": "iLO ships with a self-signed certificate. Disable only if you installed a trusted certificate.",
-                "nl": "iLO wordt geleverd met een zelfondertekend certificaat. Schakel dit alleen uit als je een vertrouwd certificaat hebt geïnstalleerd.",
-                "de": "iLO wird mit einem selbstsignierten Zertifikat ausgeliefert. Nur deaktivieren, wenn Sie ein vertrauenswürdiges Zertifikat installiert haben.",
-                "fr": "iLO est livré avec un certificat auto-signé. Désactivez uniquement si vous avez installé un certificat de confiance.",
-                "es": "iLO incluye un certificado autofirmado. Desactívalo solo si has instalado un certificado de confianza.",
-                "it": "iLO include un certificato autofirmato. Disattiva solo se hai installato un certificato attendibile."
+                "en": "iLO ships with a self-signed certificate from the factory. Enable this if the connection fails with a certificate error; leave it off if you installed a trusted certificate.",
+                "nl": "iLO wordt af fabriek geleverd met een zelfondertekend certificaat. Schakel dit in als de verbinding mislukt met een certificaatfout; laat het uit als je een vertrouwd certificaat hebt geïnstalleerd.",
+                "de": "iLO wird ab Werk mit einem selbstsignierten Zertifikat ausgeliefert. Aktivieren Sie diese Option, wenn die Verbindung mit einem Zertifikatfehler fehlschlägt; lassen Sie sie deaktiviert, wenn Sie ein vertrauenswürdiges Zertifikat installiert haben.",
+                "fr": "iLO est livré d'usine avec un certificat auto-signé. Activez cette option si la connexion échoue avec une erreur de certificat ; laissez-la désactivée si vous avez installé un certificat de confiance.",
+                "es": "iLO sale de fábrica con un certificado autofirmado. Activa esta opción si la conexión falla con un error de certificado; déjala desactivada si has instalado un certificado de confianza.",
+                "it": "iLO esce di fabbrica con un certificato autofirmato. Attiva questa opzione se la connessione fallisce con un errore di certificato; lasciala disattivata se hai installato un certificato attendibile."
               }
             }
           ]

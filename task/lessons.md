@@ -38,6 +38,21 @@ Reusable lessons learned while building this app. Read at the start of a session
   (`AbortSignal.timeout`) — a probe against an unreachable host otherwise hangs forever
   with no UI feedback.
 
+- **Never put `[[device]]` in `titleFormatted` when the device arg is filtered to one
+  of the app's own drivers (`driver_id=...`).** Homey treats such cards as device-scoped:
+  the device is shown by the device picker, NOT substituted into the title, so the store
+  and app render the literal `[[device]]` (this failed certification). A card whose only
+  arg is the device needs no `titleFormatted` at all — plain `title` ("Turn on") is the
+  correct form, exactly like driver-level triggers/conditions. `homey app validate
+  --level publish` does NOT catch this; check the store test page
+  (`homey.app/…/app/<id>/test/`) to see titles as reviewers see them.
+
+- **Options that relax TLS verification must default to OFF for certification**, even
+  when the hardware (iLO) ships with a self-signed cert and most users need it on.
+  Pair it with a guided recovery: classify cert errors (undici fetch wraps the TLS error
+  as `TypeError: fetch failed` with the real code on `err.cause.code`, e.g.
+  `DEPTH_ZERO_SELF_SIGNED_CERT`) and offer a one-tap "allow and retry" in the pair view.
+
 ## Process
 
 - For a Homey app, the unit-testable core is the API client (keep it Homey-free and
