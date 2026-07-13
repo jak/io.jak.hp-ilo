@@ -47,6 +47,13 @@ Reusable lessons learned while building this app. Read at the start of a session
   --level publish` does NOT catch this; check the store test page
   (`homey.app/…/app/<id>/test/`) to see titles as reviewers see them.
 
+- **`"setable": false` on a system capability does NOT suppress its built-in Flow
+  cards.** An `onoff` device still gets Turn on/off/toggle action cards, which fail at
+  runtime if no capability listener is registered — duplicate, broken cards next to the
+  app's own actions. For a read-only state, use a custom capability (e.g. `powered`)
+  instead; with `"insights": true` Homey even auto-generates "…for duration" triggers.
+  Existing devices need an `onInit` migration (`removeCapability`/`addCapability`).
+
 - **Options that relax TLS verification must default to OFF for certification**, even
   when the hardware (iLO) ships with a self-signed cert and most users need it on.
   Pair it with a guided recovery: classify cert errors (undici fetch wraps the TLS error
