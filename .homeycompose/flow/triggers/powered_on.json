@@ -1,0 +1,4 @@
+{
+  "title": { "en": "Turned on", "nl": "Ingeschakeld", "de": "Eingeschaltet", "fr": "Allumé", "es": "Encendido", "it": "Acceso" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}

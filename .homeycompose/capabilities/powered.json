@@ -1,0 +1,10 @@
+{
+  "type": "boolean",
+  "title": { "en": "Powered on", "nl": "Ingeschakeld", "de": "Eingeschaltet", "fr": "Allumé", "es": "Encendido", "it": "Acceso" },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "insightsTitleTrue": { "en": "Server powered on", "nl": "Server ingeschakeld", "de": "Server eingeschaltet", "fr": "Serveur allumé", "es": "Servidor encendido", "it": "Server acceso" },
+  "insightsTitleFalse": { "en": "Server powered off", "nl": "Server uitgeschakeld", "de": "Server ausgeschaltet", "fr": "Serveur éteint", "es": "Servidor apagado", "it": "Server spento" }
+}

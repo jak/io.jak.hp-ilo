@@ -16,6 +16,7 @@ interface ServerStore {
 interface IloServerDriver extends Homey.Driver {
   triggerHealthChanged(device: Homey.Device, health: string): void;
   triggerHealthCritical(device: Homey.Device): void;
+  triggerPowered(device: Homey.Device, on: boolean): void;
 }
 
 module.exports = class ServerDevice extends Homey.Device {
@@ -24,11 +25,15 @@ module.exports = class ServerDevice extends Homey.Device {
   private pollTimer?: NodeJS.Timeout;
 
   async onInit() {
+    // Power state is the custom read-only `powered` sensor, not `onoff`:
+    // `onoff` generates built-in Turn on/off/toggle Flow actions that this
+    // device does not implement (all power control is via the app's Flow
+    // actions). Migrate devices paired before the switch.
+    if (this.hasCapability('onoff')) await this.removeCapability('onoff').catch((err) => this.error(err));
+    if (!this.hasCapability('powered')) await this.addCapability('powered').catch((err) => this.error(err));
+
     this.buildClient();
 
-    // The onoff capability is read-only (a status indicator). All power control
-    // is via Flow actions, so a running server can't be shut down by an
-    // accidental tap on the device tile.
     await this.setUnavailable(this.homey.__('connecting')).catch(() => undefined);
     await this.poll();
     this.startPolling();
@@ -72,7 +77,14 @@ module.exports = class ServerDevice extends Homey.Device {
     ]);
 
     if (power.status === 'fulfilled' && (power.value === 'on' || power.value === 'off')) {
-      await this.setCapabilityValue('onoff', power.value === 'on');
+      const isOn = power.value === 'on';
+      // Fire the powered_on/powered_off triggers only on a real transition:
+      // previous === null is the first poll after pairing (no flow should fire).
+      const previous = this.getCapabilityValue('powered') as boolean | null;
+      await this.setCapabilityValue('powered', isOn);
+      if (previous !== null && previous !== isOn) {
+        (this.driver as IloServerDriver).triggerPowered(this, isOn);
+      }
     }
     if (watts.status === 'fulfilled' && watts.value !== null) {
       await this.setCapabilityValue('measure_power', watts.value);
@@ -145,7 +157,7 @@ module.exports = class ServerDevice extends Homey.Device {
   }
 
   isPoweredOn(): boolean {
-    return this.getCapabilityValue('onoff') === true;
+    return this.getCapabilityValue('powered') === true;
   }
 
 };

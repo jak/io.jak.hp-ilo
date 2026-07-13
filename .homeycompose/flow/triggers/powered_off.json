@@ -1,0 +1,4 @@
+{
+  "title": { "en": "Turned off", "nl": "Uitgeschakeld", "de": "Ausgeschaltet", "fr": "Éteint", "es": "Apagado", "it": "Spento" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}

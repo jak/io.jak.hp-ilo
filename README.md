@@ -30,7 +30,7 @@ firmware versions and server models.
 
 | Capability | What it shows / does |
 | --- | --- |
-| **Power** (`onoff`) | **Read-only** power-state indicator (on/off). Not tappable — all power control is via Flow actions, so the tile can't accidentally shut down the server. |
+| **Powered on** (`powered`) | **Read-only** power-state sensor (on/off). A custom capability rather than `onoff`, so Homey offers no built-in Turn on/off/toggle cards — all power control is via this app's Flow actions and the server can't be shut down by an accidental tap. |
 | **Power meter** (`measure_power`) | Current power draw in watts. Reads `0` on hardware without power metering — see note below. |
 | **Inlet temperature** (`measure_temperature`) | Inlet/ambient temperature (°C). |
 | **CPU temperature** (`measure_temperature.cpu`) | **Hottest** CPU sensor (max of all sensors with Redfish `PhysicalContext: CPU`), i.e. the worst-case / closest-to-throttling reading. |
@@ -45,7 +45,7 @@ firmware versions and server models.
 
 ### Flow cards
 
-- **Triggers:** server power turned on / off (built-in via the power capability);
+- **Triggers:** *Turned on* / *Turned off* (fired on power-state transitions);
   *Health status changed* (with a `health` token); *Health became critical*.
 - **Conditions:** *Server is powered on*; *Health is OK*.
 - **Actions:** *Turn on*, *Graceful shutdown*, *Force power off*, *Restart (warm)*,

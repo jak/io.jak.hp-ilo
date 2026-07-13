@@ -160,6 +160,42 @@
           }
         ],
         "id": "health_critical"
+      },
+      {
+        "title": {
+          "en": "Turned off",
+          "nl": "Uitgeschakeld",
+          "de": "Ausgeschaltet",
+          "fr": "Éteint",
+          "es": "Apagado",
+          "it": "Spento"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "powered_off"
+      },
+      {
+        "title": {
+          "en": "Turned on",
+          "nl": "Ingeschakeld",
+          "de": "Eingeschaltet",
+          "fr": "Allumé",
+          "es": "Encendido",
+          "it": "Acceso"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "powered_on"
       }
     ],
     "conditions": [
@@ -337,7 +373,7 @@
       },
       "class": "other",
       "capabilities": [
-        "onoff",
+        "powered",
         "measure_power",
         "measure_temperature",
         "measure_temperature.cpu",
@@ -345,18 +381,6 @@
         "ilo_health"
       ],
       "capabilitiesOptions": {
-        "onoff": {
-          "title": {
-            "en": "Power",
-            "nl": "Aan/uit",
-            "de": "Ein/Aus",
-            "fr": "Alimentation",
-            "es": "Alimentación",
-            "it": "Alimentazione"
-          },
-          "setable": false,
-          "getable": true
-        },
         "measure_temperature": {
           "title": {
             "en": "Inlet temperature",
@@ -560,6 +584,37 @@
       "decimals": 0,
       "insights": true,
       "icon": "/assets/fan.svg"
+    },
+    "powered": {
+      "type": "boolean",
+      "title": {
+        "en": "Powered on",
+        "nl": "Ingeschakeld",
+        "de": "Eingeschaltet",
+        "fr": "Allumé",
+        "es": "Encendido",
+        "it": "Acceso"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Server powered on",
+        "nl": "Server ingeschakeld",
+        "de": "Server eingeschaltet",
+        "fr": "Serveur allumé",
+        "es": "Servidor encendido",
+        "it": "Server acceso"
+      },
+      "insightsTitleFalse": {
+        "en": "Server powered off",
+        "nl": "Server uitgeschakeld",
+        "de": "Server ausgeschaltet",
+        "fr": "Serveur éteint",
+        "es": "Servidor apagado",
+        "it": "Server spento"
+      }
     }
   }
 }
