@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <!-- IEC power symbol: broken circle with a vertical bar through the gap -->
+  <path d="M92.4 93.2 A62 62 0 1 0 163.6 93.2" fill="none" stroke="#000000" stroke-width="16" stroke-linecap="round"/>
+  <path d="M128 48 L128 126" fill="none" stroke="#000000" stroke-width="16" stroke-linecap="round"/>
+</svg>

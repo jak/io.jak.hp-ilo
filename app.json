@@ -561,7 +561,8 @@
             "it": "Critico"
           }
         }
-      ]
+      ],
+      "icon": "/assets/health.svg"
     },
     "measure_fan_speed": {
       "type": "number",
@@ -614,7 +615,8 @@
         "fr": "Serveur éteint",
         "es": "Servidor apagado",
         "it": "Server spento"
-      }
+      },
+      "icon": "/assets/power.svg"
     }
   }
 }

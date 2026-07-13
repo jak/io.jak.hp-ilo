@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <!-- Heart outline with a pulse trace: overall server health -->
+  <path d="M128 214 C96 184 42 146 42 98 C42 66 66 46 93 46 C110 46 122 54 128 68 C134 54 146 46 163 46 C190 46 214 66 214 98 C214 146 160 184 128 214 Z" fill="none" stroke="#000000" stroke-width="14" stroke-linejoin="round"/>
+  <path d="M78 122 L104 122 L116 98 L136 152 L148 122 L178 122" fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

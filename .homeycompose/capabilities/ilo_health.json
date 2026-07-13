@@ -8,5 +8,6 @@
     { "id": "ok", "title": { "en": "OK", "nl": "OK", "de": "OK", "fr": "OK", "es": "OK", "it": "OK" } },
     { "id": "warning", "title": { "en": "Warning", "nl": "Waarschuwing", "de": "Warnung", "fr": "Avertissement", "es": "Advertencia", "it": "Avviso" } },
     { "id": "critical", "title": { "en": "Critical", "nl": "Kritiek", "de": "Kritisch", "fr": "Critique", "es": "Crítico", "it": "Critico" } }
-  ]
+  ],
+  "icon": "/assets/health.svg"
 }
