@@ -10,5 +10,8 @@
   },
   "1.1.1": {
     "en": "Updated app and driver images, improved flow descriptions"
+  },
+  "1.1.2": {
+    "en": "Removed placeholder from flow cards, changed default connection to not trust self-signed certificates, using custom powered capability to prevent accidental shutdowns, and added icons for custom capabilities."
   }
 }
