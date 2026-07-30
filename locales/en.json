@@ -15,6 +15,12 @@
   },
   "error": {
     "hostUserRequired": "Host and username are required",
-    "couldNotConnect": "Could not connect: "
+    "couldNotConnect": "Could not connect: ",
+    "differentServer": "This appears to be a different server. To replace the hardware, remove this device and pair it again."
+  },
+  "repair": {
+    "title": "Repair iLO connection",
+    "save": "Save",
+    "updated": "Connection updated"
   }
 }

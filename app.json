@@ -510,6 +510,11 @@
           "template": "add_devices"
         }
       ],
+      "repair": [
+        {
+          "id": "login"
+        }
+      ],
       "id": "server"
     }
   ],

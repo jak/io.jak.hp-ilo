@@ -15,6 +15,12 @@
   },
   "error": {
     "hostUserRequired": "Host e nome utente sono obbligatori",
-    "couldNotConnect": "Impossibile connettersi: "
+    "couldNotConnect": "Impossibile connettersi: ",
+    "differentServer": "Sembra essere un server diverso. Per sostituire l'hardware, rimuovi questo dispositivo e associalo di nuovo."
+  },
+  "repair": {
+    "title": "Ripara la connessione iLO",
+    "save": "Salva",
+    "updated": "Connessione aggiornata"
   }
 }

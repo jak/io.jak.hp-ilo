@@ -15,6 +15,12 @@
   },
   "error": {
     "hostUserRequired": "Host en gebruikersnaam zijn vereist",
-    "couldNotConnect": "Kon geen verbinding maken: "
+    "couldNotConnect": "Kon geen verbinding maken: ",
+    "differentServer": "Dit lijkt een andere server te zijn. Verwijder dit apparaat en koppel het opnieuw om de hardware te vervangen."
+  },
+  "repair": {
+    "title": "iLO-verbinding herstellen",
+    "save": "Opslaan",
+    "updated": "Verbinding bijgewerkt"
   }
 }

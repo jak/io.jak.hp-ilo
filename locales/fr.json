@@ -15,6 +15,12 @@
   },
   "error": {
     "hostUserRequired": "L'hôte et le nom d'utilisateur sont requis",
-    "couldNotConnect": "Connexion impossible : "
+    "couldNotConnect": "Connexion impossible : ",
+    "differentServer": "Il semble s'agir d'un autre serveur. Pour remplacer le matériel, supprimez cet appareil et associez-le à nouveau."
+  },
+  "repair": {
+    "title": "Réparer la connexion iLO",
+    "save": "Enregistrer",
+    "updated": "Connexion mise à jour"
   }
 }

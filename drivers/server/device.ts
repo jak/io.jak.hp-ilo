@@ -146,6 +146,25 @@ module.exports = class ServerDevice extends Homey.Device {
     await this.client?.logout().catch(() => undefined);
   }
 
+  /** Called from the driver's repair session after the new credentials have
+   * been verified with a probe. Persists them, then rebuilds the client and
+   * polls immediately so the device recovers without waiting for the next
+   * interval. Note: setSettings() does NOT fire onSettings, so the rebuild
+   * and re-poll must happen explicitly here. */
+  async repairConnection(data: {
+    host: string; username: string; password: string; allowSelfSigned: boolean;
+  }): Promise<void> {
+    await this.setStoreValue('host', data.host);
+    await this.setStoreValue('username', data.username);
+    await this.setStoreValue('password', data.password);
+    // Keep the user-visible settings in sync with the store (buildClient
+    // prefers the settings host when present).
+    await this.setSettings({ host: data.host, allow_self_signed: data.allowSelfSigned });
+    this.buildClient();
+    this.startPolling();
+    await this.poll();
+  }
+
   // Public helpers for flow cards (registered in a later task).
   async actionPower(reset: DeviceResetType) {
     if (!this.client) throw new Error('Device is not connected');

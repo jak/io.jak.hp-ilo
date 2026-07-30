@@ -14,6 +14,8 @@ interface PairCreds {
   allowSelfSigned: boolean;
 }
 
+type ServerInfo = Awaited<ReturnType<IloClient['probe']>>;
+
 /** The public surface of the server device that the flow cards rely on.
  * Homey types `args.device` loosely, so we narrow it to this interface
  * instead of casting through `any`.
@@ -22,6 +24,7 @@ interface IloServerDevice extends Homey.Device {
   actionPower(reset: DeviceResetType): Promise<void>;
   getHealthValue(): HealthState;
   isPoweredOn(): boolean;
+  repairConnection(data: PairCreds): Promise<void>;
 }
 
 module.exports = class ServerDriver extends Homey.Driver {
@@ -46,28 +49,9 @@ module.exports = class ServerDriver extends Homey.Driver {
     let info: Awaited<ReturnType<IloClient['probe']>> | undefined;
 
     session.setHandler('manual_login', async (data: PairCreds) => {
-      // Diagnostic logging proves the handler is reached and which host it
-      // tried; the password is intentionally never logged.
-      this.log('manual_login received', { host: data.host, username: data.username, allowSelfSigned: data.allowSelfSigned });
-      if (!data.host || !data.username) throw new Error(this.homey.__('error.hostUserRequired'));
-      const client = new IloClient({
-        host: data.host,
-        username: data.username,
-        password: data.password,
-        allowSelfSigned: data.allowSelfSigned,
-      });
-      try {
-        info = await client.probe(); // throws on bad host/creds/TLS
-        this.log('manual_login probe ok', { name: info.name, serialNumber: info.serialNumber });
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        this.error('manual_login probe failed:', message);
-        // Certificate verification failures get a structured response instead
-        // of a thrown error, so the pair view can offer a one-tap
-        // "allow self-signed and retry" instead of a dead-end message.
-        if (isCertificateError(err)) return { certError: true };
-        throw new Error(`${this.homey.__('error.couldNotConnect')}${message}`);
-      }
+      const result = await this.probeCredentials(data, 'manual_login');
+      if ('certError' in result) return result;
+      info = result;
       creds = data;
       return true;
     });
@@ -105,6 +89,66 @@ module.exports = class ServerDriver extends Homey.Driver {
           poll_interval: 30,
         },
       }];
+    });
+  }
+
+  /** Probe the iLO with candidate credentials. Returns the server identity on
+   * success, `{ certError: true }` when the certificate could not be verified
+   * (so the view can offer a one-tap "allow self-signed and retry"), and
+   * throws a localized error for every other failure.
+   * The password is intentionally never logged. */
+  private async probeCredentials(data: PairCreds, context: string): Promise<ServerInfo | { certError: true }> {
+    this.log(`${context} received`, { host: data.host, username: data.username, allowSelfSigned: data.allowSelfSigned });
+    if (!data.host || !data.username) throw new Error(this.homey.__('error.hostUserRequired'));
+    const client = new IloClient({
+      host: data.host,
+      username: data.username,
+      password: data.password,
+      allowSelfSigned: data.allowSelfSigned,
+    });
+    try {
+      const info = await client.probe(); // throws on bad host/creds/TLS
+      this.log(`${context} probe ok`, { name: info.name, serialNumber: info.serialNumber });
+      return info;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.error(`${context} probe failed:`, message);
+      if (isCertificateError(err)) return { certError: true };
+      throw new Error(`${this.homey.__('error.couldNotConnect')}${message}`);
+    }
+  }
+
+  async onRepair(session: PairSession, device: Homey.Device) {
+    const iloDevice = device as IloServerDevice;
+
+    // Prefill the repair view with the current connection details so the user
+    // only has to change what actually changed. The password is never sent.
+    session.setHandler('repair_prefill', async () => {
+      const store = device.getStore() as { host: string; username: string };
+      return {
+        host: ((device.getSetting('host') as string) || '').trim() || store.host,
+        username: store.username,
+        allowSelfSigned: device.getSetting('allow_self_signed') === true,
+      };
+    });
+
+    session.setHandler('manual_login', async (data: PairCreds) => {
+      const result = await this.probeCredentials(data, 'repair');
+      if ('certError' in result) return result;
+
+      // Repair updates credentials for the SAME server; silently repointing an
+      // existing device (and every Flow referencing it) at different hardware
+      // is almost certainly a mistake. The device id is the serial from
+      // pairing (or the host when no serial was reported — skip the check then).
+      const deviceId = String(device.getData().id);
+      const probedSerial = result.serialNumber;
+      const idIsSerial = deviceId !== ((device.getStore() as { host: string }).host);
+      if (idIsSerial && probedSerial && probedSerial !== 'unknown' && probedSerial !== deviceId) {
+        throw new Error(`${this.homey.__('error.differentServer')} (${probedSerial} ≠ ${deviceId})`);
+      }
+
+      await iloDevice.repairConnection(data);
+      return { repaired: true };
     });
   }
 
