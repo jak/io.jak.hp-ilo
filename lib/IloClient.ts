@@ -103,11 +103,30 @@ function defaultTransport(allowSelfSigned: boolean, timeoutMs: number): HttpRequ
   };
 }
 
+/** Turn a Redfish MessageId like "Base.1.0.UnauthorizedLoginAttempt" into
+ * readable text ("Unauthorized login attempt"). */
+function humanizeMessageId(id: string): string {
+  const last = id.split('.').pop() ?? id;
+  const spaced = last.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1).toLowerCase();
+}
+
 /** Pull a human-readable message out of a Redfish extended-error body. */
 export function redfishErrorMessage(body: any, fallback: string): string {
   const info = body?.error?.['@Message.ExtendedInfo'];
-  if (Array.isArray(info) && info[0]?.Message) return info[0].Message as string;
-  if (body?.error?.message) return body.error.message as string;
+  if (Array.isArray(info)) {
+    const withMessage = info.find((e: any) => typeof e?.Message === 'string' && e.Message);
+    if (withMessage) return withMessage.Message as string;
+    // iLO error bodies (e.g. a failed login) often carry only a MessageId,
+    // such as "Base.1.0.UnauthorizedLoginAttempt" — humanize it rather than
+    // surfacing the useless top-level boilerplate message.
+    const withId = info.find((e: any) => typeof e?.MessageId === 'string' && e.MessageId);
+    if (withId) return humanizeMessageId(withId.MessageId as string);
+  }
+  const msg = body?.error?.message;
+  // The top-level message is often literally "See @Message.ExtendedInfo for
+  // more information." — worse than the caller's fallback, so skip it.
+  if (typeof msg === 'string' && msg && !/@Message\.ExtendedInfo/i.test(msg)) return msg;
   return fallback;
 }
 

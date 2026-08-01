@@ -18,9 +18,37 @@ describe('redfishErrorMessage', () => {
     expect(redfishErrorMessage({ error: { message: 'plain message' } }, 'fallback')).to.equal('plain message');
   });
 
-  it('falls back to error.message when ExtendedInfo[0] has no Message field', () => {
+  it('skips entries without Message and uses a later entry that has one', () => {
+    const body = {
+      error: {
+        '@Message.ExtendedInfo': [
+          { MessageId: 'Base.1.0.GeneralError' },
+          { Message: 'the real message' },
+        ],
+      },
+    };
+    expect(redfishErrorMessage(body, 'fallback')).to.equal('the real message');
+  });
+
+  it('humanizes the MessageId when no entry has a Message (real iLO login-failure shape)', () => {
+    const body = {
+      error: {
+        code: 'iLO.0.10.ExtendedInfo',
+        message: 'See @Message.ExtendedInfo for more information.',
+        '@Message.ExtendedInfo': [{ MessageId: 'Base.1.0.UnauthorizedLoginAttempt' }],
+      },
+    };
+    expect(redfishErrorMessage(body, 'fallback')).to.equal('Unauthorized login attempt');
+  });
+
+  it('prefers a humanized MessageId over the top-level error.message', () => {
     const body = { error: { '@Message.ExtendedInfo': [{ MessageId: 'Base.1.0.GeneralError' }], message: 'no msg in info' } };
-    expect(redfishErrorMessage(body, 'fallback')).to.equal('no msg in info');
+    expect(redfishErrorMessage(body, 'fallback')).to.equal('General error');
+  });
+
+  it('ignores the "See @Message.ExtendedInfo" boilerplate and uses the fallback', () => {
+    const body = { error: { message: 'See @Message.ExtendedInfo for more information.' } };
+    expect(redfishErrorMessage(body, 'fallback')).to.equal('fallback');
   });
 
   it('uses the provided fallback for an empty/garbage body', () => {
