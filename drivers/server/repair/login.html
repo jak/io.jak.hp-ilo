@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 14px 0 4px;
+      font-size: 14px;
+      color: #555;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .checkbox-row label {
+      margin: 0;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #2196F3;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .status {
+      text-align: center;
+      margin-top: 10px;
+      color: #666;
+      font-size: 14px;
+    }
+    .error {
+      text-align: center;
+      margin-top: 8px;
+      color: #d32f2f;
+      font-size: 14px;
+    }
+    .cert-warning {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid #f0c36d;
+      border-radius: 6px;
+      background: #fdf7e7;
+      font-size: 14px;
+      color: #6b5416;
+    }
+    .cert-warning button {
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <label for="host" id="host-label">Host / IP</label>
+  <input type="text" id="host" placeholder="192.168.1.50" />
+
+  <label for="username" id="username-label">Username</label>
+  <input type="text" id="username" placeholder="Administrator" />
+
+  <label for="password" id="password-label">Password</label>
+  <input type="password" id="password" />
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="selfsigned" />
+    <label for="selfsigned" id="selfsigned-label">Allow self-signed certificate</label>
+  </div>
+
+  <button id="connect-btn" type="button">Save</button>
+  <div id="status" class="status"></div>
+  <div id="error-msg" class="error"></div>
+
+  <div id="cert-warning" class="cert-warning">
+    <span id="cert-warning-text">This iLO uses a self-signed certificate, so the connection could not be verified. This is how iLO ships from the factory.</span>
+    <button id="cert-retry-btn" type="button">Allow self-signed certificate and retry</button>
+  </div>
+
+  <script>
+    // Repair views behave like pair views: a global `Homey` is injected and
+    // the script runs at top level — do NOT wrap in onHomeyReady (see
+    // task/lessons.md and the pair/login.html this view mirrors).
+    Homey.setTitle('Repair iLO connection');
+
+    var btn = document.getElementById('connect-btn');
+    var statusEl = document.getElementById('status');
+    var errorEl = document.getElementById('error-msg');
+    var certWarningEl = document.getElementById('cert-warning');
+    var certRetryBtn = document.getElementById('cert-retry-btn');
+
+    // Defensive translation helper: return the localised string, or fall back
+    // to the supplied English default if localisation is unavailable/empty.
+    function t(key, fallback) {
+      try {
+        var v = Homey.__(key);
+        return (v && v !== key) ? v : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    // Prefill everything except the password from the device's current
+    // connection details, so the user only changes what actually changed.
+    Homey.emit('repair_prefill', {}, function (err, data) {
+      if (err || !data) return;
+      if (data.host) document.getElementById('host').value = data.host;
+      if (data.username) document.getElementById('username').value = data.username;
+      document.getElementById('selfsigned').checked = !!data.allowSelfSigned;
+    });
+
+    function submit() {
+      var host = document.getElementById('host').value.trim();
+      var username = document.getElementById('username').value.trim();
+      var password = document.getElementById('password').value;
+      var allowSelfSigned = document.getElementById('selfsigned').checked;
+
+      errorEl.textContent = '';
+      certWarningEl.style.display = 'none';
+
+      if (!host || !username) {
+        errorEl.textContent = t('pair.missingFields', 'Please enter both a host/IP and a username.');
+        return;
+      }
+
+      btn.disabled = true;
+      statusEl.textContent = t('pair.connecting', 'Connecting…');
+
+      Homey.emit('manual_login', {
+        host: host,
+        username: username,
+        password: password,
+        allowSelfSigned: allowSelfSigned,
+      }, function (err, result) {
+        if (err) {
+          statusEl.textContent = '';
+          errorEl.textContent = (err && err.message) ? err.message : String(err);
+          btn.disabled = false;
+          return;
+        }
+        // The driver reports an unverifiable (self-signed) certificate as a
+        // structured result so we can offer a one-tap recovery instead of a
+        // dead-end error message.
+        if (result && result.certError) {
+          statusEl.textContent = '';
+          certWarningEl.style.display = 'block';
+          btn.disabled = false;
+          return;
+        }
+        statusEl.textContent = t('repair.updated', 'Connection updated');
+        Homey.done();
+      });
+    }
+
+    btn.addEventListener('click', submit);
+
+    certRetryBtn.addEventListener('click', function () {
+      document.getElementById('selfsigned').checked = true;
+      certWarningEl.style.display = 'none';
+      submit();
+    });
+
+    document.getElementById('password').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submit();
+    });
+
+    // Localise static labels/placeholders/button AFTER the working setup above.
+    // English text stays in the HTML as the fallback: we only overwrite it
+    // when a translation is available, so the view still reads in English if
+    // localisation ever fails.
+    Homey.setTitle(t('repair.title', 'Repair iLO connection'));
+    document.getElementById('host-label').textContent = t('pair.host', 'Host / IP');
+    document.getElementById('username-label').textContent = t('pair.username', 'Username');
+    document.getElementById('password-label').textContent = t('pair.password', 'Password');
+    document.getElementById('selfsigned-label').textContent = t('pair.allowSelfSigned', 'Allow self-signed certificate');
+    btn.textContent = t('repair.save', 'Save');
+    document.getElementById('cert-warning-text').textContent = t('pair.selfSignedDetected', 'This iLO uses a self-signed certificate, so the connection could not be verified. This is how iLO ships from the factory.');
+    certRetryBtn.textContent = t('pair.selfSignedRetry', 'Allow self-signed certificate and retry');
+  </script>
+</body>
+</html>

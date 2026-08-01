@@ -15,6 +15,12 @@
   },
   "error": {
     "hostUserRequired": "Host und Benutzername sind erforderlich",
-    "couldNotConnect": "Verbindung fehlgeschlagen: "
+    "couldNotConnect": "Verbindung fehlgeschlagen: ",
+    "differentServer": "Dies scheint ein anderer Server zu sein. Um die Hardware zu ersetzen, entfernen Sie dieses Gerät und koppeln Sie es erneut."
+  },
+  "repair": {
+    "title": "iLO-Verbindung reparieren",
+    "save": "Speichern",
+    "updated": "Verbindung aktualisiert"
   }
 }
