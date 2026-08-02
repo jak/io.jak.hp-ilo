@@ -1,0 +1,4 @@
+{
+  "title": { "en": "Health became warning", "nl": "Status werd waarschuwing", "de": "Zustand wurde zur Warnung", "fr": "L'etat est passe en avertissement", "es": "El estado paso a advertencia", "it": "Lo stato e diventato un avviso" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}
