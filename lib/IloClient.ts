@@ -1,6 +1,6 @@
 import { Agent } from 'undici';
 import type {
-  HealthState, PowerState, ResetType, ThermalReading,
+  HealthState, PowerState, ResetType, SystemSnapshot, ThermalReading,
 } from './redfish-types';
 
 export interface HttpResponse {
@@ -274,9 +274,8 @@ export class IloClient {
     return this.getJson(await this.systemUri());
   }
 
-  async getPowerState(): Promise<PowerState> {
-    const sys = await this.getSystem();
-    switch (sys.PowerState) {
+  private mapPowerState(raw?: string): PowerState {
+    switch (raw) {
       case 'On': return 'on';
       case 'Off': return 'off';
       case 'PoweringOn':
@@ -285,9 +284,22 @@ export class IloClient {
     }
   }
 
+  async getPowerState(): Promise<PowerState> {
+    return (await this.getSnapshot()).powerState;
+  }
+
   async getHealth(): Promise<HealthState> {
+    return (await this.getSnapshot()).health;
+  }
+
+  /** Power state and health in a single GET of the system resource — the
+   * poll loop uses this so it costs one request instead of two. */
+  async getSnapshot(): Promise<SystemSnapshot> {
     const sys = await this.getSystem();
-    return this.mapHealth(sys?.Status?.HealthRollup ?? sys?.Status?.Health);
+    return {
+      powerState: this.mapPowerState(sys?.PowerState),
+      health: this.mapHealth(sys?.Status?.HealthRollup ?? sys?.Status?.Health),
+    };
   }
 
   async getServerInfo(): Promise<{ name: string; serialNumber: string; model: string }> {

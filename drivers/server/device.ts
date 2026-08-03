@@ -110,11 +110,11 @@ module.exports = class ServerDevice extends Homey.Device {
 
     // allSettled so one failing subresource (e.g. a chassis with no /Thermal)
     // doesn't blank the whole device — fulfilled readings still update.
-    const [power, watts, thermal, health] = await Promise.allSettled([
-      client.getPowerState(),
+    // Power state and health share a single GET of the system resource.
+    const [snapshot, watts, thermal] = await Promise.allSettled([
+      client.getSnapshot(),
       client.getPowerWatts(),
       client.getThermal(),
-      client.getHealth(),
     ]);
 
     // The client was swapped (repair / settings change) while this poll was
@@ -123,8 +123,8 @@ module.exports = class ServerDevice extends Homey.Device {
     // mark the device unavailable after the new client already recovered it.
     if (clientGeneration !== this.clientGeneration || this.stopped) return;
 
-    if (power.status === 'fulfilled' && (power.value === 'on' || power.value === 'off')) {
-      const isOn = power.value === 'on';
+    if (snapshot.status === 'fulfilled' && (snapshot.value.powerState === 'on' || snapshot.value.powerState === 'off')) {
+      const isOn = snapshot.value.powerState === 'on';
       // Fire the powered_on/powered_off triggers only on a real transition:
       // previous === null is the first poll after pairing (no flow should fire).
       const previous = this.getCapabilityValue('powered') as boolean | null;
@@ -142,22 +142,23 @@ module.exports = class ServerDevice extends Homey.Device {
       if (t.cpuTemp !== undefined) await this.setCapabilityValue('measure_temperature.cpu', t.cpuTemp);
       if (t.maxFanPercent !== undefined) await this.setCapabilityValue('measure_fan_speed', t.maxFanPercent);
     }
-    if (health.status === 'fulfilled' && health.value !== 'unknown') {
+    if (snapshot.status === 'fulfilled' && snapshot.value.health !== 'unknown') {
+      const { health } = snapshot.value;
       const previous = this.getCapabilityValue('ilo_health') as HealthState | null;
-      const { changed, critical } = healthTransition(previous, health.value);
+      const { changed, critical } = healthTransition(previous, health);
       if (changed) {
         const driver = this.driver as IloServerDriver;
-        driver.triggerHealthChanged(this, health.value);
+        driver.triggerHealthChanged(this, health);
         if (critical) driver.triggerHealthCritical(this);
       }
-      await this.setCapabilityValue('ilo_health', health.value);
+      await this.setCapabilityValue('ilo_health', health);
     }
 
-    // Availability keys on getPowerState: power state + health both come from
-    // getSystem(), so it's the core "is the iLO reachable/authorized" signal.
-    // Thermal/watts failures are soft (device stays available).
-    if (power.status === 'rejected') {
-      const { reason }: PromiseRejectedResult = power;
+    // Availability keys on the snapshot: power state + health come from the
+    // system resource, so it's the core "is the iLO reachable/authorized"
+    // signal. Thermal/watts failures are soft (device stays available).
+    if (snapshot.status === 'rejected') {
+      const { reason }: PromiseRejectedResult = snapshot;
       const message = reason instanceof Error ? reason.message : String(reason);
       await this.setUnavailable(`${this.homey.__('unreachable')}${message}`).catch(() => undefined);
     } else {
