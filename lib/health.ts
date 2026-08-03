@@ -3,6 +3,8 @@ import type { HealthState } from './redfish-types';
 export interface HealthTransition {
   /** True when `next` differs from the previously stored value. */
   changed: boolean;
+  /** True when this transition should fire the "warning" trigger. */
+  warning: boolean;
   /** True when this transition should fire the "critical" trigger. */
   critical: boolean;
 }
@@ -14,10 +16,15 @@ export interface HealthTransition {
  * without a Homey mock:
  *  - `changed` is true whenever the new value differs from the previous one
  *    (including the first reading, where `prev` is null/undefined).
- *  - `critical` fires only on a change to the `'critical'` state, so a server
- *    that stays critical between polls is not re-announced.
+ *  - `warning` and `critical` fire only on a change INTO their corresponding
+ *    states, so a server that stays degraded between polls is not
+ *    re-announced. A `critical -> warning` recovery does fire `warning`.
  */
 export function healthTransition(prev: string | null | undefined, next: HealthState): HealthTransition {
   const changed = prev !== next;
-  return { changed, critical: changed && next === 'critical' };
+  return {
+    changed,
+    warning: changed && next === 'warning',
+    critical: changed && next === 'critical',
+  };
 }

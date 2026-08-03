@@ -31,6 +31,8 @@ module.exports = class ServerDriver extends Homey.Driver {
 
   private healthChanged?: Homey.FlowCardTriggerDevice;
 
+  private healthWarning?: Homey.FlowCardTriggerDevice;
+
   private healthCritical?: Homey.FlowCardTriggerDevice;
 
   private poweredOn?: Homey.FlowCardTriggerDevice;
@@ -169,6 +171,7 @@ module.exports = class ServerDriver extends Homey.Driver {
 
     // Device triggers (fired from device.ts via the methods below)
     this.healthChanged = this.homey.flow.getDeviceTriggerCard('health_changed');
+    this.healthWarning = this.homey.flow.getDeviceTriggerCard('health_warning');
     this.healthCritical = this.homey.flow.getDeviceTriggerCard('health_critical');
     this.poweredOn = this.homey.flow.getDeviceTriggerCard('powered_on');
     this.poweredOff = this.homey.flow.getDeviceTriggerCard('powered_off');
@@ -176,6 +179,10 @@ module.exports = class ServerDriver extends Homey.Driver {
 
   triggerHealthChanged(device: Homey.Device, health: string): void {
     this.healthChanged?.trigger(device, { health }, {}).catch((err) => this.error(err));
+  }
+
+  triggerHealthWarning(device: Homey.Device): void {
+    this.healthWarning?.trigger(device, {}, {}).catch((err) => this.error(err));
   }
 
   triggerHealthCritical(device: Homey.Device): void {
