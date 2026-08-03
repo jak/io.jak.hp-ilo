@@ -13,5 +13,8 @@
   },
   "1.1.2": {
     "en": "Removed placeholder from flow cards, changed default connection to not trust self-signed certificates, using custom powered capability to prevent accidental shutdowns, and added icons for custom capabilities."
+  },
+  "1.2.0": {
+    "en": "Repair your iLO connection without re-pairing, test the connection from device settings, control and monitor the UID identify light, get a new \"Health became warning\" trigger, plus clearer error messages and more reliable, lighter polling."
   }
 }
