@@ -33,3 +33,9 @@ jobs:
       # name and trips eslint's node/no-unpublished-import on every SDK import).
       - name: Validate Homey app (publish level)
         run: npx --yes homey@4.4.1 app validate --level publish
+
+      # The validate step regenerates app.json from .homeycompose; if that
+      # produced a diff, the committed app.json was stale or hand-edited
+      # (manifest sources and generated file out of sync — see issue #18).
+      - name: Check app.json is in sync with .homeycompose
+        run: git diff --exit-code -- app.json
