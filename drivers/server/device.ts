@@ -15,6 +15,7 @@ interface ServerStore {
  * Structural mirror of ServerDriver's public surface — keep in sync with the class. */
 interface IloServerDriver extends Homey.Driver {
   triggerHealthChanged(device: Homey.Device, health: string): void;
+  triggerHealthWarning(device: Homey.Device): void;
   triggerHealthCritical(device: Homey.Device): void;
   triggerPowered(device: Homey.Device, on: boolean): void;
 }
@@ -151,10 +152,11 @@ module.exports = class ServerDevice extends Homey.Device {
     if (snapshot.status === 'fulfilled' && snapshot.value.health !== 'unknown') {
       const { health } = snapshot.value;
       const previous = this.getCapabilityValue('ilo_health') as HealthState | null;
-      const { changed, critical } = healthTransition(previous, health);
+      const { changed, warning, critical } = healthTransition(previous, health);
       if (changed) {
         const driver = this.driver as IloServerDriver;
         driver.triggerHealthChanged(this, health);
+        if (warning) driver.triggerHealthWarning(this);
         if (critical) driver.triggerHealthCritical(this);
       }
       await this.setCapabilityValue('ilo_health', health);
