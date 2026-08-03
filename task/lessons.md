@@ -70,6 +70,13 @@ Reusable lessons learned while building this app. Read at the start of a session
   and generation-stamp the client so a poll started against an older generation
   discards ALL its results (readings and availability), not just avoids overlap.
 
+- **Never add the homey CLI as a devDependency.** The npm package is named
+  `homey` — the same specifier the runtime provides for `import Homey from
+  'homey'` — so installing it makes eslint's `node/no-unpublished-import` flag
+  every SDK import ("homey is not published") and risks the CLI shadowing the
+  runtime module. Pin the CLI version at the call site instead:
+  `npx --yes homey@<version> app validate`.
+
 ## Process
 
 - For a Homey app, the unit-testable core is the API client (keep it Homey-free and
