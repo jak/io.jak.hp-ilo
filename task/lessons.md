@@ -77,6 +77,19 @@ Reusable lessons learned while building this app. Read at the start of a session
   runtime module. Pin the CLI version at the call site instead:
   `npx --yes homey@<version> app validate`.
 
+- **Probe the wire BEFORE building a discovery integration.** A raw SSDP
+  M-SEARCH from a laptop (no Homey needed) answers in minutes whether the
+  hardware actually advertises. iLO (5, and per its Access Settings, the
+  whole family) does NOT implement SSDP at all — it answered neither the
+  Redfish ST (`urn:dmtf-org:service:redfish-rest:1`) nor `ssdp:all` while
+  Sonos/HDHomeRun on the same LAN responded, and the iLO web UI lists no
+  SSDP/discovery service to enable. Redfish SSDP is optional in DSP0266 and
+  HPE didn't ship it; a whole feature (PR #21, issue #8) was built on the
+  unverified assumption that it existed. Order of work: verify the
+  advertisement exists first, then write the integration. (Rejected pivots:
+  Homey `mac`-OUI discovery matches every HP printer/dock; iLO Federation
+  multicast is undocumented for third parties.)
+
 ## Process
 
 - For a Homey app, the unit-testable core is the API client (keep it Homey-free and
