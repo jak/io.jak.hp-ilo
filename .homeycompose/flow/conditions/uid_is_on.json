@@ -1,0 +1,4 @@
+{
+  "title": { "en": "UID light !{{is|isn't}} on", "nl": "UID-lampje !{{is|is niet}} aan", "de": "UID-Leuchte !{{ist|ist nicht}} an", "fr": "Le voyant UID !{{est|n'est pas}} allumé", "es": "La luz UID !{{está|no está}} encendida", "it": "La spia UID !{{è|non è}} accesa" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}

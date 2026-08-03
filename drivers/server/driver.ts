@@ -24,6 +24,8 @@ interface IloServerDevice extends Homey.Device {
   actionPower(reset: DeviceResetType): Promise<void>;
   getHealthValue(): HealthState;
   isPoweredOn(): boolean;
+  actionSetUid(on: boolean): Promise<void>;
+  isUidOn(): boolean;
   repairConnection(data: PairCreds): Promise<void>;
 }
 
@@ -160,6 +162,8 @@ module.exports = class ServerDriver extends Homey.Driver {
       .registerRunListener(async (args: { device: IloServerDevice }) => args.device.isPoweredOn());
     this.homey.flow.getConditionCard('health_is_ok')
       .registerRunListener(async (args: { device: IloServerDevice }) => args.device.getHealthValue() === 'ok');
+    this.homey.flow.getConditionCard('uid_is_on')
+      .registerRunListener(async (args: { device: IloServerDevice }) => args.device.isUidOn());
 
     // Actions: card id -> Redfish reset type (see lib/flow-actions.ts)
     for (const [cardId, reset] of Object.entries(RESET_BY_CARD)) {
@@ -168,6 +172,16 @@ module.exports = class ServerDriver extends Homey.Driver {
           await args.device.actionPower(reset);
         });
     }
+
+    // UID / identify light actions
+    this.homey.flow.getActionCard('uid_on')
+      .registerRunListener(async (args: { device: IloServerDevice }) => {
+        await args.device.actionSetUid(true);
+      });
+    this.homey.flow.getActionCard('uid_off')
+      .registerRunListener(async (args: { device: IloServerDevice }) => {
+        await args.device.actionSetUid(false);
+      });
 
     // Device triggers (fired from device.ts via the methods below)
     this.healthChanged = this.homey.flow.getDeviceTriggerCard('health_changed');
