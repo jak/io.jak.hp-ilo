@@ -60,6 +60,16 @@ Reusable lessons learned while building this app. Read at the start of a session
   as `TypeError: fetch failed` with the real code on `err.cause.code`, e.g.
   `DEPTH_ZERO_SELF_SIGNED_CERT`) and offer a one-tap "allow and retry" in the pair view.
 
+- **Swapping a polled client while a poll is in flight lets stale results clobber
+  fresh state.** Symptom: after a successful repair, the device flashed
+  "unavailable — no valid session" until the next poll — an in-flight poll holding
+  the old (now-invalid) session finished *after* the new client's first poll and
+  overwrote its availability. `setInterval` also lets slow polls (15s timeouts
+  against an unreachable BMC) overlap and stack. Fix both structurally: serialize
+  polls on a promise chain, re-arm a one-shot timer only after each poll completes,
+  and generation-stamp the client so a poll started against an older generation
+  discards ALL its results (readings and availability), not just avoids overlap.
+
 ## Process
 
 - For a Homey app, the unit-testable core is the API client (keep it Homey-free and

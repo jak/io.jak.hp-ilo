@@ -23,6 +23,17 @@ module.exports = class ServerDevice extends Homey.Device {
 
   private client?: IloClient;
   private pollTimer?: NodeJS.Timeout;
+  /** Bumped whenever the client is rebuilt (settings change, repair). A poll
+   * that started against an older generation discards its results — they
+   * describe a connection that no longer exists, and its availability verdict
+   * would clobber the fresh client's. */
+  private clientGeneration = 0;
+  /** Serializes polls: each new poll runs only after the previous finished,
+   * so a slow poll (unreachable iLO, 15s timeouts) can never overlap the next
+   * scheduled one and pile requests onto a struggling BMC. */
+  private pollChain: Promise<void> = Promise.resolve();
+  /** Set on delete/uninit so an in-flight poll can't reschedule the timer. */
+  private stopped = false;
 
   async onInit() {
     // Power state is the custom read-only `powered` sensor, not `onoff`:
@@ -54,27 +65,63 @@ module.exports = class ServerDevice extends Homey.Device {
       password: store.password,
       allowSelfSigned,
     });
+    this.clientGeneration += 1;
   }
 
   private startPolling() {
+    this.scheduleNextPoll();
+  }
+
+  /** (Re)arm the one-shot poll timer. Re-arming only after the previous poll
+   * completes (see the timer callback) guarantees a full interval of quiet
+   * between polls even when a poll takes longer than the interval itself —
+   * with setInterval, slow polls against an unreachable iLO would stack up. */
+  private scheduleNextPoll() {
+    if (this.stopped) return;
+    if (this.pollTimer) this.homey.clearTimeout(this.pollTimer);
     const seconds = (this.getSetting('poll_interval') as number) ?? 30;
-    if (this.pollTimer) this.homey.clearInterval(this.pollTimer);
-    this.pollTimer = this.homey.setInterval(() => {
-      this.poll().catch((err) => this.error(err));
+    this.pollTimer = this.homey.setTimeout(() => {
+      this.poll()
+        .catch((err) => this.error(err))
+        .finally(() => this.scheduleNextPoll());
     }, seconds * 1000);
   }
 
-  private async poll() {
-    if (!this.client) return;
+  private stopPolling() {
+    if (this.pollTimer) {
+      this.homey.clearTimeout(this.pollTimer);
+      this.pollTimer = undefined;
+    }
+  }
+
+  /** Run a poll, serialized behind any poll already in flight. Callers that
+   * await this (onInit, onSettings, repair) get their own full poll pass —
+   * queued, not coalesced, because after a client rebuild the queued poll must
+   * run against the NEW client rather than reuse the stale in-flight result. */
+  private poll(): Promise<void> {
+    const run = this.pollChain.then(() => this.doPoll());
+    this.pollChain = run.catch(() => undefined);
+    return run;
+  }
+
+  private async doPoll() {
+    const { client, clientGeneration } = this;
+    if (!client || this.stopped) return;
 
     // allSettled so one failing subresource (e.g. a chassis with no /Thermal)
     // doesn't blank the whole device — fulfilled readings still update.
     const [power, watts, thermal, health] = await Promise.allSettled([
-      this.client.getPowerState(),
-      this.client.getPowerWatts(),
-      this.client.getThermal(),
-      this.client.getHealth(),
+      client.getPowerState(),
+      client.getPowerWatts(),
+      client.getThermal(),
+      client.getHealth(),
     ]);
+
+    // The client was swapped (repair / settings change) while this poll was
+    // running: everything above describes the old connection, so apply none
+    // of it. In particular a failed poll against dead credentials must not
+    // mark the device unavailable after the new client already recovered it.
+    if (clientGeneration !== this.clientGeneration || this.stopped) return;
 
     if (power.status === 'fulfilled' && (power.value === 'on' || power.value === 'off')) {
       const isOn = power.value === 'on';
@@ -137,12 +184,14 @@ module.exports = class ServerDevice extends Homey.Device {
   }
 
   async onDeleted() {
-    if (this.pollTimer) this.homey.clearInterval(this.pollTimer);
+    this.stopped = true;
+    this.stopPolling();
     await this.client?.logout().catch(() => undefined);
   }
 
   async onUninit() {
-    if (this.pollTimer) this.homey.clearInterval(this.pollTimer);
+    this.stopped = true;
+    this.stopPolling();
     await this.client?.logout().catch(() => undefined);
   }
 
