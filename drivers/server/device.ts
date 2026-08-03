@@ -42,6 +42,12 @@ module.exports = class ServerDevice extends Homey.Device {
     // actions). Migrate devices paired before the switch.
     if (this.hasCapability('onoff')) await this.removeCapability('onoff').catch((err) => this.error(err));
     if (!this.hasCapability('powered')) await this.addCapability('powered').catch((err) => this.error(err));
+    // Migration: the "Test connection" maintenance action for devices paired
+    // before it existed.
+    if (!this.hasCapability('button.test_connection')) {
+      await this.addCapability('button.test_connection').catch((err) => this.error(err));
+    }
+    this.registerCapabilityListener('button.test_connection', () => this.testConnection());
 
     this.buildClient();
 
@@ -194,6 +200,31 @@ module.exports = class ServerDevice extends Homey.Device {
     this.stopped = true;
     this.stopPolling();
     await this.client?.logout().catch(() => undefined);
+  }
+
+  /** "Test connection" maintenance action (device settings). Probes the iLO
+   * with the device's CURRENT host/credentials/TLS settings on a throwaway
+   * client (own session, logged out afterwards — doesn't disturb the polling
+   * client). Resolving shows Homey's success toast; a failure surfaces the
+   * classified error (timeout, certificate guidance, "Unauthorized login
+   * attempt", …) in the settings UI instead of a dead "unavailable" banner. */
+  private async testConnection(): Promise<void> {
+    const store = this.getStore() as ServerStore;
+    const host = ((this.getSetting('host') as string) || '').trim() || store.host;
+    const client = new IloClient({
+      host,
+      username: store.username,
+      password: store.password,
+      allowSelfSigned: this.getSetting('allow_self_signed') === true,
+    });
+    try {
+      const info = await client.probe();
+      this.log('test connection ok', { host, name: info.name, serialNumber: info.serialNumber });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.log('test connection failed', { host, message });
+      throw new Error(`${this.homey.__('error.couldNotConnect')}${message}`);
+    }
   }
 
   /** Called from the driver's repair session after the new credentials have
