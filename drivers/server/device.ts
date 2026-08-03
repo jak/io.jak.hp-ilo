@@ -48,6 +48,10 @@ module.exports = class ServerDevice extends Homey.Device {
     if (!this.hasCapability('button.test_connection')) {
       await this.addCapability('button.test_connection').catch((err) => this.error(err));
     }
+    // Migration: the UID light sensor for devices paired before it existed.
+    if (!this.hasCapability('uid_light')) {
+      await this.addCapability('uid_light').catch((err) => this.error(err));
+    }
     this.registerCapabilityListener('button.test_connection', () => this.testConnection());
 
     this.buildClient();
@@ -148,6 +152,9 @@ module.exports = class ServerDevice extends Homey.Device {
       if (t.inletTemp !== undefined) await this.setCapabilityValue('measure_temperature', t.inletTemp);
       if (t.cpuTemp !== undefined) await this.setCapabilityValue('measure_temperature.cpu', t.cpuTemp);
       if (t.maxFanPercent !== undefined) await this.setCapabilityValue('measure_fan_speed', t.maxFanPercent);
+    }
+    if (snapshot.status === 'fulfilled' && snapshot.value.uidLight !== undefined) {
+      await this.setCapabilityValue('uid_light', snapshot.value.uidLight);
     }
     if (snapshot.status === 'fulfilled' && snapshot.value.health !== 'unknown') {
       const { health } = snapshot.value;
@@ -260,6 +267,17 @@ module.exports = class ServerDevice extends Homey.Device {
 
   isPoweredOn(): boolean {
     return this.getCapabilityValue('powered') === true;
+  }
+
+  async actionSetUid(on: boolean): Promise<void> {
+    if (!this.client) throw new Error('Device is not connected');
+    await this.client.setUidLight(on);
+    // Reflect the new state immediately instead of waiting for the next poll.
+    await this.setCapabilityValue('uid_light', on).catch((err) => this.error(err));
+  }
+
+  isUidOn(): boolean {
+    return this.getCapabilityValue('uid_light') === true;
   }
 
 };

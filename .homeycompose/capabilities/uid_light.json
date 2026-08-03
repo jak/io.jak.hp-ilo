@@ -1,0 +1,9 @@
+{
+  "type": "boolean",
+  "title": { "en": "UID light", "nl": "UID-lampje", "de": "UID-Leuchte", "fr": "Voyant UID", "es": "Luz UID", "it": "Spia UID" },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "insights": false,
+  "icon": "/assets/uid.svg"
+}

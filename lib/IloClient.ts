@@ -292,14 +292,47 @@ export class IloClient {
     return (await this.getSnapshot()).health;
   }
 
-  /** Power state and health in a single GET of the system resource — the
-   * poll loop uses this so it costs one request instead of two. */
+  /** UID / identify LED state from a system resource body. Prefers the modern
+   * LocationIndicatorActive boolean; falls back to the legacy IndicatorLED
+   * ('Blinking' counts as on — iLO uses it while identify is active).
+   * Undefined when the server reports neither (or 'Unknown'). */
+  private mapUidLight(sys: any): boolean | undefined {
+    if (typeof sys?.LocationIndicatorActive === 'boolean') return sys.LocationIndicatorActive;
+    switch (sys?.IndicatorLED) {
+      case 'Lit':
+      case 'Blinking': return true;
+      case 'Off': return false;
+      default: return undefined;
+    }
+  }
+
+  /** Power state, health and UID light in a single GET of the system
+   * resource — the poll loop uses this so it costs one request, not three. */
   async getSnapshot(): Promise<SystemSnapshot> {
     const sys = await this.getSystem();
-    return {
+    const snapshot: SystemSnapshot = {
       powerState: this.mapPowerState(sys?.PowerState),
       health: this.mapHealth(sys?.Status?.HealthRollup ?? sys?.Status?.Health),
     };
+    // Only add the key when reported, so "not reported" and "off" stay distinct.
+    const uidLight = this.mapUidLight(sys);
+    if (uidLight !== undefined) snapshot.uidLight = uidLight;
+    return snapshot;
+  }
+
+  /** Turn the UID / identify LED on or off. PATCHes LocationIndicatorActive
+   * when the system resource exposes it, else the legacy IndicatorLED with
+   * 'Lit'/'Off' ('Blinking' is iLO-controlled and not settable via Redfish). */
+  async setUidLight(on: boolean): Promise<void> {
+    const sys = await this.getSystem();
+    const body = typeof sys?.LocationIndicatorActive === 'boolean'
+      ? { LocationIndicatorActive: on }
+      : { IndicatorLED: on ? 'Lit' : 'Off' };
+    const res = await this.request('PATCH', await this.systemUri(), body);
+    if (res.status >= 400) {
+      const b = await res.json().catch(() => ({}));
+      throw new Error(redfishErrorMessage(b, `Setting the UID light failed (HTTP ${res.status})`));
+    }
   }
 
   async getServerInfo(): Promise<{ name: string; serialNumber: string; model: string }> {

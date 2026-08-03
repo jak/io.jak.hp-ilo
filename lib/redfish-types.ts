@@ -9,5 +9,6 @@ export type DeviceResetType = Extract<ResetType, 'On' | 'ForceOff' | 'GracefulSh
 
 export interface ThermalReading { inletTemp?: number; cpuTemp?: number; maxFanPercent?: number; }
 
-/** Power state and health taken from a single read of the system resource. */
-export interface SystemSnapshot { powerState: PowerState; health: HealthState; }
+/** Power state, health and UID light taken from a single read of the system
+ * resource. `uidLight` is undefined when the server doesn't report it. */
+export interface SystemSnapshot { powerState: PowerState; health: HealthState; uidLight?: boolean; }

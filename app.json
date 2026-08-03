@@ -252,6 +252,24 @@
           }
         ],
         "id": "is_on"
+      },
+      {
+        "title": {
+          "en": "UID light !{{is|isn't}} on",
+          "nl": "UID-lampje !{{is|is niet}} aan",
+          "de": "UID-Leuchte !{{ist|ist nicht}} an",
+          "fr": "Le voyant UID !{{est|n'est pas}} allumé",
+          "es": "La luz UID !{{está|no está}} encendida",
+          "it": "La spia UID !{{è|non è}} accesa"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "uid_is_on"
       }
     ],
     "actions": [
@@ -353,6 +371,50 @@
       },
       {
         "title": {
+          "en": "Turn UID light off",
+          "nl": "UID-lampje uitschakelen",
+          "de": "UID-Leuchte ausschalten",
+          "fr": "Éteindre le voyant UID",
+          "es": "Apagar la luz UID",
+          "it": "Spegni la spia UID"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "uid_off"
+      },
+      {
+        "title": {
+          "en": "Turn UID light on",
+          "nl": "UID-lampje inschakelen",
+          "de": "UID-Leuchte einschalten",
+          "fr": "Allumer le voyant UID",
+          "es": "Encender la luz UID",
+          "it": "Accendi la spia UID"
+        },
+        "hint": {
+          "en": "The blue UID (unit identification) light helps locate this server in a rack.",
+          "nl": "Het blauwe UID-lampje (unit identification) helpt deze server in een rack te vinden.",
+          "de": "Die blaue UID-Leuchte (Unit Identification) hilft, diesen Server im Rack zu finden.",
+          "fr": "Le voyant UID bleu (identification d'unité) aide à localiser ce serveur dans une baie.",
+          "es": "La luz UID azul (identificación de unidad) ayuda a localizar este servidor en un rack.",
+          "it": "La spia UID blu (identificazione unità) aiuta a individuare questo server in un rack."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=server"
+          }
+        ],
+        "id": "uid_on"
+      },
+      {
+        "title": {
           "en": "Restart",
           "nl": "Herstarten",
           "de": "Neustart",
@@ -397,6 +459,7 @@
         "measure_temperature.cpu",
         "measure_fan_speed",
         "ilo_health",
+        "uid_light",
         "button.test_connection"
       ],
       "capabilitiesOptions": {
@@ -660,6 +723,22 @@
         "it": "Server spento"
       },
       "icon": "/assets/power.svg"
+    },
+    "uid_light": {
+      "type": "boolean",
+      "title": {
+        "en": "UID light",
+        "nl": "UID-lampje",
+        "de": "UID-Leuchte",
+        "fr": "Voyant UID",
+        "es": "Luz UID",
+        "it": "Spia UID"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "insights": false,
+      "icon": "/assets/uid.svg"
     }
   }
 }

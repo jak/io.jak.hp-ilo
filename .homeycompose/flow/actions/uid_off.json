@@ -1,0 +1,4 @@
+{
+  "title": { "en": "Turn UID light off", "nl": "UID-lampje uitschakelen", "de": "UID-Leuchte ausschalten", "fr": "Éteindre le voyant UID", "es": "Apagar la luz UID", "it": "Spegni la spia UID" },
+  "args": [{ "name": "device", "type": "device", "filter": "driver_id=server" }]
+}

@@ -8,6 +8,7 @@
     "measure_temperature.cpu",
     "measure_fan_speed",
     "ilo_health",
+    "uid_light",
     "button.test_connection"
   ],
   "capabilitiesOptions": {
