@@ -77,6 +77,15 @@ Reusable lessons learned while building this app. Read at the start of a session
   runtime module. Pin the CLI version at the call site instead:
   `npx --yes homey@<version> app validate`.
 
+- **Probe the wire BEFORE building a discovery integration.** A raw SSDP
+  M-SEARCH from a laptop (no Homey needed) answers in minutes whether the
+  hardware actually advertises: this iLO answered neither the Redfish ST
+  (`urn:dmtf-org:service:redfish-rest:1`) nor `ssdp:all`, while Sonos/HDHomeRun
+  on the same LAN responded — so the pairing-discovery feature (PR #21) was
+  unverifiable end-to-end regardless of code correctness (iLO Discovery
+  Services off, or iLO on a separate VLAN). Order of work: verify the
+  advertisement first, then write the integration.
+
 ## Process
 
 - For a Homey app, the unit-testable core is the API client (keep it Homey-free and
