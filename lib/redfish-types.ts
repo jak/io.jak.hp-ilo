@@ -8,3 +8,6 @@ export type ResetType =
 export type DeviceResetType = Extract<ResetType, 'On' | 'ForceOff' | 'GracefulShutdown' | 'GracefulRestart' | 'ForceRestart'>;
 
 export interface ThermalReading { inletTemp?: number; cpuTemp?: number; maxFanPercent?: number; }
+
+/** Power state and health taken from a single read of the system resource. */
+export interface SystemSnapshot { powerState: PowerState; health: HealthState; }
