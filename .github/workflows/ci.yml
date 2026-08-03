@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check (tsc)
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test
+
+      # The CLI version is pinned here (not as a devDependency: the package is
+      # named "homey", which collides with the Homey runtime module of the same
+      # name and trips eslint's node/no-unpublished-import on every SDK import).
+      - name: Validate Homey app (publish level)
+        run: npx --yes homey@4.4.1 app validate --level publish
