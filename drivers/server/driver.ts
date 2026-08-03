@@ -60,6 +60,24 @@ module.exports = class ServerDriver extends Homey.Driver {
       return true;
     });
 
+    // The login view calls this to offer discovered iLOs as host suggestions.
+    // Discovery is best-effort sugar: any failure (or an empty result — SSDP
+    // doesn't cross VLANs, and iLO's "Discovery Services" can be disabled)
+    // just leaves the manual host field as-is.
+    session.setHandler('discover', async () => {
+      try {
+        const results = Object.values(this.getDiscoveryStrategy().getDiscoveryResults());
+        const addresses = results
+          .map((r) => (r as { address?: string }).address)
+          .filter((a): a is string => typeof a === 'string' && a.length > 0);
+        this.log('discover', { count: addresses.length });
+        return [...new Set(addresses)].sort();
+      } catch (err) {
+        this.error('discover failed:', err);
+        return [];
+      }
+    });
+
     session.setHandler('list_devices', async () => {
       if (!creds) return [];
       // Reuse the identity captured during manual_login; only probe again if it

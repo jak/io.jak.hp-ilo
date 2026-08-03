@@ -11,7 +11,8 @@
     "connecting": "Verbinde…",
     "missingFields": "Bitte geben Sie sowohl einen Host/IP als auch einen Benutzernamen ein.",
     "selfSignedDetected": "Diese iLO verwendet ein selbstsigniertes Zertifikat, daher konnte die Verbindung nicht verifiziert werden. So wird iLO ab Werk ausgeliefert.",
-    "selfSignedRetry": "Selbstsigniertes Zertifikat zulassen und erneut versuchen"
+    "selfSignedRetry": "Selbstsigniertes Zertifikat zulassen und erneut versuchen",
+    "discovered": "Im Netzwerk gefunden:"
   },
   "error": {
     "hostUserRequired": "Host und Benutzername sind erforderlich",

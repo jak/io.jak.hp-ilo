@@ -71,11 +71,31 @@
     .cert-warning button {
       margin-top: 12px;
     }
+    .discovered {
+      display: none;
+      margin-top: 6px;
+      font-size: 13px;
+      color: #666;
+    }
+    .discovered button {
+      display: inline-block;
+      width: auto;
+      margin: 6px 6px 0 0;
+      padding: 6px 12px;
+      font-size: 14px;
+      background: #eef4fb;
+      color: #1565c0;
+      border: 1px solid #bbdefb;
+    }
   </style>
 </head>
 <body>
   <label for="host" id="host-label">Host / IP</label>
   <input type="text" id="host" placeholder="192.168.1.50" />
+  <div id="discovered" class="discovered">
+    <span id="discovered-label">Discovered on your network:</span>
+    <div id="discovered-list"></div>
+  </div>
 
   <label for="username" id="username-label">Username</label>
   <input type="text" id="username" placeholder="Administrator" />
@@ -164,6 +184,44 @@
 
     btn.addEventListener('click', submit);
 
+    // Best-effort SSDP discovery: suggest Redfish hosts found on the network.
+    // Results trickle in after the strategy starts, so poll a few times.
+    // Never overwrite something the user has already typed.
+    var hostInput = document.getElementById('host');
+    var discoveredEl = document.getElementById('discovered');
+    var discoveredList = document.getElementById('discovered-list');
+    var known = [];
+
+    function renderDiscovered(addresses) {
+      addresses.forEach(function (address) {
+        if (known.indexOf(address) !== -1) return;
+        known.push(address);
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = address;
+        b.addEventListener('click', function () {
+          hostInput.value = address;
+        });
+        discoveredList.appendChild(b);
+      });
+      if (known.length > 0) discoveredEl.style.display = 'block';
+      // Exactly one iLO on the network and nothing typed yet: fill it in.
+      if (known.length === 1 && hostInput.value.trim() === '') {
+        hostInput.value = known[0];
+      }
+    }
+
+    function discover() {
+      Homey.emit('discover', {}, function (err, addresses) {
+        if (err || !Array.isArray(addresses)) return;
+        renderDiscovered(addresses);
+      });
+    }
+
+    discover();
+    setTimeout(discover, 4000);
+    setTimeout(discover, 10000);
+
     certRetryBtn.addEventListener('click', function () {
       document.getElementById('selfsigned').checked = true;
       certWarningEl.style.display = 'none';
@@ -183,6 +241,7 @@
     document.getElementById('username-label').textContent = t('pair.username', 'Username');
     document.getElementById('password-label').textContent = t('pair.password', 'Password');
     document.getElementById('selfsigned-label').textContent = t('pair.allowSelfSigned', 'Allow self-signed certificate');
+    document.getElementById('discovered-label').textContent = t('pair.discovered', 'Discovered on your network:');
     btn.textContent = t('pair.connect', 'Connect');
     document.getElementById('cert-warning-text').textContent = t('pair.selfSignedDetected', 'This iLO uses a self-signed certificate, so the connection could not be verified. This is how iLO ships from the factory.');
     certRetryBtn.textContent = t('pair.selfSignedRetry', 'Allow self-signed certificate and retry');

@@ -29,6 +29,7 @@
   },
   "platforms": ["local"],
   "connectivity": ["lan"],
+  "discovery": "ilo",
   "images": {
     "small": "/drivers/server/assets/images/small.png",
     "large": "/drivers/server/assets/images/large.png",

@@ -509,6 +509,7 @@
       "connectivity": [
         "lan"
       ],
+      "discovery": "ilo",
       "images": {
         "small": "/drivers/server/assets/images/small.png",
         "large": "/drivers/server/assets/images/large.png",
@@ -739,6 +740,26 @@
       "setable": false,
       "insights": false,
       "icon": "/assets/uid.svg"
+    }
+  },
+  "discovery": {
+    "ilo": {
+      "type": "ssdp",
+      "ssdp": {
+        "search": "urn:dmtf-org:service:redfish-rest:1"
+      },
+      "id": "{{headers.usn}}",
+      "conditions": [
+        [
+          {
+            "field": "headers.st",
+            "match": {
+              "type": "string",
+              "value": "urn:dmtf-org:service:redfish-rest:1"
+            }
+          }
+        ]
+      ]
     }
   }
 }

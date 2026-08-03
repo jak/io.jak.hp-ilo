@@ -11,7 +11,8 @@
     "connecting": "Connecting…",
     "missingFields": "Please enter both a host/IP and a username.",
     "selfSignedDetected": "This iLO uses a self-signed certificate, so the connection could not be verified. This is how iLO ships from the factory.",
-    "selfSignedRetry": "Allow self-signed certificate and retry"
+    "selfSignedRetry": "Allow self-signed certificate and retry",
+    "discovered": "Discovered on your network:"
   },
   "error": {
     "hostUserRequired": "Host and username are required",
