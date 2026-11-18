@@ -16,6 +16,19 @@ updates:
         update-types: [version-update:semver-major]
       - dependency-name: typescript
         update-types: [version-update:semver-major]
+      # eslint-config-athom@4 peers on eslint >=8.57.1 <9, so ESLint 9+ can't
+      # be used yet. 8.x stays allowed: it's the target of #27.
+      - dependency-name: eslint
+        versions: [">=9.0.0"]
+      # chai 5+ is ESM-only; the tests compile as CommonJS (#28).
+      - dependency-name: chai
+        update-types: [version-update:semver-major]
+      - dependency-name: "@types/chai"
+        update-types: [version-update:semver-major]
+      # Our undici Agent is passed to Node's built-in fetch, so its major must
+      # match the runtime's bundled undici; 7/8 break on Homey's Node (#36).
+      - dependency-name: undici
+        update-types: [version-update:semver-major]
 
   - package-ecosystem: github-actions
     directory: /

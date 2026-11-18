@@ -44,6 +44,20 @@ Reusable lessons learned while building this app. Read at the start of a session
   via the `dispatcher` option for self-signed TLS, and always set a request timeout
   (`AbortSignal.timeout`) — a probe against an unreachable host otherwise hangs forever
   with no UI feedback.
+  **Caveat:** an `Agent` from our `undici` package passed to Node's *built-in*
+  `fetch` only works while its major matches the runtime's bundled undici (check
+  `process.versions.undici`). undici 8's Agent is rejected by Node 24's fetch
+  (`invalid onRequestStart method`), and undici 6's is rejected by Node 26's. Never
+  take an undici major bump without testing the self-signed path on Homey's Node
+  version; the fix is to use undici's own `fetch` with its `Agent` (#36).
+
+- **Never run `homey app add-types` on this repo.** (Homey CLI 4.6.3) It bumps
+  `@types/homey` to latest AND overwrites `tsconfig.json` with a bare template,
+  dropping `extends: @tsconfig/node16` (so `esModuleInterop`, `module: node16`,
+  `strict`), the `test/` exclude and the ts-node block. The next `homey app run`
+  then fails in `tsc` with `TS1259 … can only be default-imported using the
+  'esModuleInterop' flag` and `Property 'homey' does not exist`. To upgrade the
+  types, bump the version in `package.json` instead.
 
 - **Never put `[[device]]` in `titleFormatted` when the device arg is filtered to one
   of the app's own drivers (`driver_id=...`).** Homey treats such cards as device-scoped:
