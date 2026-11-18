@@ -22,7 +22,7 @@
     "test:coverage": "c8 --reporter=text --reporter=html mocha"
   },
   "dependencies": {
-    "undici": "^6.21.0"
+    "undici": "^6.29.1"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.8",
