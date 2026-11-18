@@ -33,6 +33,13 @@ Reusable lessons learned while building this app. Read at the start of a session
   pattern needs TypeScript `^5` and `@types/node` `^16`. TS 6 defaults
   `moduleDetection: "force"` (treats files as ESM), breaking the CommonJS `module` global.
 
+- **`@tsconfig/node16` ≥16.1.10 sets `"types": ["node"]`, which disables automatic
+  `@types/*` inclusion** — tests then fail under ts-node with `TS2593: Cannot find
+  name 'describe'`. The test globals are declared in the `ts-node.compilerOptions`
+  block of `tsconfig.json` (`"types": ["node", "mocha"]`); the app build excludes
+  `test/` and doesn't need them. When a "patch" bump of a base tsconfig breaks the
+  build, diff the base config before blaming the other packages bumped alongside it.
+
 - **Redfish/iLO transport:** Homey's runtime has global `fetch`; use an `undici.Agent`
   via the `dispatcher` option for self-signed TLS, and always set a request timeout
   (`AbortSignal.timeout`) — a probe against an unreachable host otherwise hangs forever
