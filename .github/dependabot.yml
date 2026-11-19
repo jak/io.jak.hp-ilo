@@ -20,15 +20,11 @@ updates:
       # be used yet. 8.x stays allowed: it's the target of #27.
       - dependency-name: eslint
         versions: [">=9.0.0"]
-      # chai 5+ is ESM-only; the tests compile as CommonJS (#28).
-      - dependency-name: chai
-        update-types: [version-update:semver-major]
-      - dependency-name: "@types/chai"
-        update-types: [version-update:semver-major]
-      # Our undici Agent is passed to Node's built-in fetch, so its major must
-      # match the runtime's bundled undici; 7/8 break on Homey's Node (#36).
+      # undici 8 requires Node >=22.19; Homey runs Node 22 but doesn't document
+      # the minor. 7.x (Node >=20.18.1) is fine since #36 decoupled the
+      # transport from Node's bundled undici. Lift once Homey's Node is known.
       - dependency-name: undici
-        update-types: [version-update:semver-major]
+        versions: [">=8.0.0"]
 
   - package-ecosystem: github-actions
     directory: /

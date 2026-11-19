@@ -40,6 +40,15 @@ Reusable lessons learned while building this app. Read at the start of a session
   `test/` and doesn't need them. When a "patch" bump of a base tsconfig breaks the
   build, diff the base config before blaming the other packages bumped alongside it.
 
+- **ESM-only dev dependencies (e.g. chai 5+) work in the CommonJS tests without
+  converting them to ESM.** Set `"module"`/`"moduleResolution": "nodenext"` in
+  the `ts-node.compilerOptions` block of `tsconfig.json` only. TS ≥5.8 then allows
+  `import … from` an ESM package in a CJS file (it emits `require()`), and Node
+  ≥22.12 loads it via native `require(esm)`. Otherwise you get
+  `TS1479 … the referenced file is an ECMAScript module and cannot be imported
+  with 'require'`. The app build keeps `node16` (its output is byte-identical),
+  so nothing changes for Homey.
+
 - **Redfish/iLO transport:** use undici's OWN `fetch` together with its `Agent`
   (`import { Agent, fetch } from 'undici'`) for self-signed TLS, and always set a
   request timeout (`AbortSignal.timeout`): a probe against an unreachable host
