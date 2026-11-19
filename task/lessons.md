@@ -66,6 +66,15 @@ Reusable lessons learned while building this app. Read at the start of a session
   every Homey runs Node 22. The app's `compatibility` (`>=12.9.0`) must cover
   only firmware whose Node version the code actually supports; a too-low value
   silently ships a broken app to those Homeys.
+  Homey's developer docs don't give the Node minor version. Evidence for the
+  minimum: the **12.9.0 release candidates shipped Node v22.20.0** (rc.3 for
+  Homey Pro 2023, rc.4 for Pro 2016–2019, both 2025-10-21, per the Homey
+  Community firmware threads); stable 12.9.0 (2025-11-24) says only "v22".
+  The app logs the version at startup (`initialized (Node vX)`): **v22.23.5** on
+  a Homey Pro on current firmware, 2026-11-19. One device alone never proves
+  the minimum for the whole `compatibility` range; cite firmware release notes.
+  Still test dependencies that need a recent 22 minor (undici 8: ≥22.19) on a
+  device before release.
 
 - **Never run `homey app add-types` on this repo.** (Homey CLI 4.6.3) It bumps
   `@types/homey` to latest AND overwrites `tsconfig.json` with a bare template,
