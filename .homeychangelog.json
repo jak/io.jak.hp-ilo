@@ -16,5 +16,8 @@
   },
   "1.2.0": {
     "en": "Repair your iLO connection without re-pairing, test the connection from device settings, control and monitor the UID identify light, get a new \"Health became warning\" trigger, plus clearer error messages and more reliable, lighter polling."
+  },
+  "1.3.0": {
+    "en": "Improved connection reliability for iLOs using self-signed certificates, applied security updates, and refreshed the app description with translations in five languages; requires Homey firmware 12.9 or later."
   }
 }
