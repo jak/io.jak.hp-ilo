@@ -10,6 +10,14 @@
   },
   "overrides": [
     {
+      // Homey SDK v3 requires `import Homey from 'homey'` + `module.exports =
+      // class extends Homey.X` (see task/lessons.md), which this rule forbids.
+      "files": ["app.ts", "drivers/**/*.ts"],
+      "rules": {
+        "import/no-import-module-exports": "off"
+      }
+    },
+    {
       "files": ["lib/**/*.ts", "test/**/*.ts"],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off"
