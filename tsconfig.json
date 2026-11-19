@@ -8,6 +8,8 @@
   "ts-node": {
     "compilerOptions": {
       "types": ["node", "mocha"],
+      "module": "nodenext",
+      "moduleResolution": "nodenext",
       "sourceMap": true,
       "inlineSourceMap": true,
       "inlineSources": true
