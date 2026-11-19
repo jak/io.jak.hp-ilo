@@ -1,0 +1,3 @@
+Houd je HPE ProLiant-servers rechtstreeks vanuit Homey in de gaten. Elke server wordt een apparaat dat laat zien of hij aan staat, hoeveel stroom hij verbruikt, de inlaat- en CPU-temperatuur, de ventilatorsnelheid en de algehele status, en waarmee je het UID-lampje aan of uit zet.
+
+Met Flows zet je een server aan, sluit je hem netjes af, schakel je hem geforceerd uit of voer je een warme of koude herstart uit, en reageer je meteen zodra de aan/uit-status of de status van de server verandert. Werkt met iLO 5 (ProLiant Gen10/Gen10 Plus) en iLO 6 (Gen11) via de Redfish API. Gebruikt je iLO nog het zelfondertekende fabriekscertificaat, dan kun je dat tijdens het koppelen met één tik toestaan.
