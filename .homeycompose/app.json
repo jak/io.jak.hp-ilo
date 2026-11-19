@@ -1,7 +1,7 @@
 {
   "id": "io.jak.hp-ilo",
   "version": "1.2.0",
-  "compatibility": ">=12.4.0",
+  "compatibility": ">=12.9.0",
   "sdk": 3,
   "runtime": "nodejs",
   "platforms": [
