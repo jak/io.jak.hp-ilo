@@ -157,8 +157,10 @@ export class IloClient {
   private sleep(ms: number): Promise<void> {
     // One-shot delay that resolves (and self-clears) immediately; this lib is
     // intentionally Homey-independent so it can't use this.homey.setTimeout.
-    // eslint-disable-next-line homey-app/global-timers
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => {
+      // eslint-disable-next-line homey-app/global-timers
+      setTimeout(resolve, ms);
+    });
   }
 
   /** Delay before a transient retry; honors a numeric Retry-After header if present. */
