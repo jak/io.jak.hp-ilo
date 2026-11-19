@@ -1,0 +1,3 @@
+Tieni d'occhio i tuoi server HPE ProLiant direttamente da Homey. Ogni server diventa un dispositivo che mostra se è acceso, quanta energia consuma, le temperature di ingresso aria e della CPU, la velocità delle ventole e lo stato generale, e con cui puoi accendere o spegnere la spia di localizzazione UID.
+
+Con i Flow puoi accendere un server, spegnerlo in modo ordinato, forzarne lo spegnimento, eseguire un riavvio a caldo o a freddo e reagire non appena cambia il suo stato di alimentazione o di salute. Compatibile con iLO 5 (ProLiant Gen10/Gen10 Plus) e iLO 6 (Gen11) tramite l'API Redfish. Se il tuo iLO usa ancora il certificato autofirmato di fabbrica, durante l'abbinamento puoi consentirlo con un tocco.

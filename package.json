@@ -1,6 +1,6 @@
 {
   "name": "io.jak.hp-ilo",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Homey app to monitor and control HPE servers via the iLO 5/6 Redfish API.",
   "license": "GPL-3.0-or-later",
   "author": "jak",
