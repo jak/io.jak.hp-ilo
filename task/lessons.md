@@ -40,16 +40,23 @@ Reusable lessons learned while building this app. Read at the start of a session
   `test/` and doesn't need them. When a "patch" bump of a base tsconfig breaks the
   build, diff the base config before blaming the other packages bumped alongside it.
 
-- **Redfish/iLO transport:** Homey's runtime has global `fetch`; use an `undici.Agent`
-  via the `dispatcher` option for self-signed TLS, and always set a request timeout
-  (`AbortSignal.timeout`) — a probe against an unreachable host otherwise hangs forever
-  with no UI feedback.
-  **Caveat:** an `Agent` from our `undici` package passed to Node's *built-in*
-  `fetch` only works while its major matches the runtime's bundled undici (check
-  `process.versions.undici`). undici 8's Agent is rejected by Node 24's fetch
-  (`invalid onRequestStart method`), and undici 6's is rejected by Node 26's. Never
-  take an undici major bump without testing the self-signed path on Homey's Node
-  version; the fix is to use undici's own `fetch` with its `Agent` (#36).
+- **Redfish/iLO transport:** use undici's OWN `fetch` together with its `Agent`
+  (`import { Agent, fetch } from 'undici'`) for self-signed TLS, and always set a
+  request timeout (`AbortSignal.timeout`): a probe against an unreachable host
+  otherwise hangs forever with no UI feedback.
+  **Never pass an undici `Agent` to Node's *built-in* `fetch`:** that only works
+  while our undici major matches the runtime's bundled copy
+  (`process.versions.undici`). undici 8's Agent is rejected by Node 24's fetch
+  (`invalid onRequestStart method`), and undici 6's by Node 26's (#36).
+  `test/IloClient.tls.spec.ts` runs the real transport against a self-signed
+  server and fails if this regresses.
+
+- **Check the Homey firmware → Node.js table before relying on a Node API.**
+  Older Homey Pro (2016–2019) firmware before 12.9 runs apps on **Node 16** (no
+  global `fetch`), and Homey Pro (2023)/mini before 12.9 on Node 18. From 12.9.0
+  every Homey runs Node 22. The app's `compatibility` (`>=12.9.0`) must cover
+  only firmware whose Node version the code actually supports; a too-low value
+  silently ships a broken app to those Homeys.
 
 - **Never run `homey app add-types` on this repo.** (Homey CLI 4.6.3) It bumps
   `@types/homey` to latest AND overwrites `tsconfig.json` with a bare template,

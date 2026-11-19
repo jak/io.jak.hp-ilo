@@ -1,4 +1,4 @@
-import { Agent } from 'undici';
+import { Agent, fetch as undiciFetch } from 'undici';
 import type {
   HealthState, PowerState, ResetType, SystemSnapshot, ThermalReading,
 } from './redfish-types';
@@ -20,7 +20,7 @@ export interface IloClientOptions {
   username: string;
   password: string;
   allowSelfSigned?: boolean;
-  /** Injectable transport for testing; defaults to fetch + undici Agent. */
+  /** Injectable transport for testing; defaults to createDefaultTransport(). */
   transport?: HttpRequestFn;
   /** Base delay between transient (503/429) retries, in ms. Set to 0 in tests. */
   retryDelayMs?: number;
@@ -58,17 +58,24 @@ export function isCertificateError(err: unknown): boolean {
   return false;
 }
 
-function defaultTransport(allowSelfSigned: boolean, timeoutMs: number): HttpRequestFn {
+/** The fetch implementation the default transport calls; injectable for tests. */
+export type FetchFn = (url: string, init: any) => Promise<any>;
+
+/**
+ * Build the production transport. It uses undici's OWN `fetch` together with
+ * its `Agent`: an Agent from this package passed to Node's *built-in* fetch
+ * only works while both undici copies share a handler API, which breaks across
+ * majors (undici 8's Agent is rejected by Node 24's fetch, undici 6's by
+ * Node 26's; see #36). Pairing them from one package removes that coupling.
+ */
+export function createDefaultTransport(
+  allowSelfSigned: boolean,
+  timeoutMs: number,
+  fetchFn: FetchFn = undiciFetch as FetchFn,
+): HttpRequestFn {
   const dispatcher = allowSelfSigned
     ? new Agent({ connect: { rejectUnauthorized: false } })
     : undefined;
-  // Node 18+ exposes `fetch` as a global; @types/node@16 doesn't declare it,
-  // so reach it via globalThis. The `dispatcher` option is undici-specific and
-  // not in the DOM RequestInit type — hence the `as any` cast (intentional).
-  const fetchFn: (url: string, init: any) => Promise<any> = (globalThis as any).fetch;
-  if (typeof fetchFn !== 'function') {
-    throw new Error('Global fetch is unavailable; Node 18+ is required');
-  }
   return async (url, init) => {
     // Abort the request if the host is unreachable/slow, so a probe or poll
     // surfaces a clear error in the pairing UI instead of hanging forever.
@@ -146,7 +153,7 @@ export class IloClient {
     this.username = opts.username;
     this.password = opts.password;
     // Secure by default: TLS verification stays on unless explicitly relaxed.
-    this.transport = opts.transport ?? defaultTransport(opts.allowSelfSigned ?? false, opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+    this.transport = opts.transport ?? createDefaultTransport(opts.allowSelfSigned ?? false, opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
     this.retryDelayMs = opts.retryDelayMs ?? 500;
   }
 
