@@ -17,7 +17,7 @@ updates:
       - dependency-name: typescript
         update-types: [version-update:semver-major]
       # eslint-config-athom@4 peers on eslint >=8.57.1 <9, so ESLint 9+ can't
-      # be used yet. 8.x stays allowed: it's the target of #27.
+      # be used until Athom ships a config that supports it.
       - dependency-name: eslint
         versions: [">=9.0.0"]
 
