@@ -20,11 +20,6 @@ updates:
       # be used yet. 8.x stays allowed: it's the target of #27.
       - dependency-name: eslint
         versions: [">=9.0.0"]
-      # undici 8 requires Node >=22.19; Homey runs Node 22 but doesn't document
-      # the minor. 7.x (Node >=20.18.1) is fine since #36 decoupled the
-      # transport from Node's bundled undici. Lift once Homey's Node is known.
-      - dependency-name: undici
-        versions: [">=8.0.0"]
 
   - package-ecosystem: github-actions
     directory: /
